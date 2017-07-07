@@ -1,1 +1,2090 @@
-ChronQC demo
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<script type='text/javascript' src='http://code.jquery.com/jquery-1.4.4rc2.js'></script>
+	<script src="http://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.0.0/dygraph.css" rel="stylesheet"/>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.0.0/dygraph.js"></script> 
+	<script src="http://dygraphs.com/src/extras/synchronizer.js"></script>
+	<script src="http://dygraphs.com/tests/interaction.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.2.0/prototype.js"></script>
+    <script src="http://calendarview.org/releases/1.2/javascripts/calendarview.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://calendarview.org/releases/1.2/stylesheets/calendarview.css"/>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script type="text/javascript" src="http://momentjs.com/downloads/moment.min.js"></script>
+
+	<style type="text/css">
+
+		.header{
+			background-color: #fbd043;
+			border:0;
+			margin:0;
+			padding: 0.5em;
+			font-weight: bold; 
+			position:fixed;
+			width:100%;
+			top:0;
+			left:0; 
+			z-index:2;
+			height:4em;
+			overflow:hidden;
+		}
+		
+		#header_title {
+			display:inline-block;
+			font-size: 200%;
+			float:left;
+			margin-left:1em;
+		}
+		
+		#report{
+			position:absolute;
+			bottom:0;
+			right:1em;
+			font-size: 80%;
+		}
+		
+		
+		
+		.nav-item{
+			width:100%;;
+			color: #ffffff !important;
+		}
+		
+		.nav-item.active a{
+			background-color: #3cba54;
+			color: #ffffff !important;
+		}
+		
+		.summary   			{
+			background-color: #fbd043;
+			max-height: 100%; 
+			left:0px;
+			width: 17em; 
+			position:fixed;
+			bottom: 0;
+			top:4em
+			
+		}
+		
+		ul {
+			margin: 0;
+			padding: 0;
+			background-color: #f1f1f1;
+		}
+
+		li a {
+			display: block;
+			color: #000;
+			font-size: 9pt;
+			text-decoration: none;
+			border-bottom: 1px solid #ccc;
+		}
+
+		li a:hover:not(.active) {
+			background-color: #bfbbbb;
+			color: white;
+		}
+		
+		::-webkit-scrollbar {
+			width: 10px;
+			height: 10px;
+		}
+		::-webkit-scrollbar-track {
+			background: #D8D8D8;
+			border-left: 1px solid #D8D8D8;
+			border-right: 1px solid #D8D8D8;
+		}
+		::-webkit-scrollbar-thumb {
+			background: #f1f1f1;
+			border-left: 1.25px solid #D8D8D8;
+			border-right: 1.25px solid #D8D8D8;
+		}
+		::-webkit-scrollbar-thumb:hover {
+			-moz-box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
+			-webkit-box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
+			box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
+		}
+		::-webkit-scrollbar-thumb:active {
+			background: #FFFFFF;
+			-moz-box-shadow: inset 1px 1px 10px rgba(0,0,0,0.4);
+			-webkit-box-shadow: inset 1px 1px 10px rgba(0,0,0,0.4);
+			box-shadow: inset 1px 1px 10px rgba(0,0,0,0.2);
+		}
+		
+		.annbuttons 		{
+			margin-left:50px; 
+			margin-top:50px;
+			margin-left:350px; 
+			margin-bottom:75px;	
+		}
+		
+		.interaction		{
+			margin-left:2em; 
+			margin-top:4em; 	
+			color:black;		
+			clear:left;	
+			font-size:80%;
+			overflow: auto
+		}
+		
+		.bigcontainer      	{
+			width:90%;	
+			height:500px; 	 	
+			margin-top:100px; 	
+			margin-left:19em; 	
+			margin-right:1em; 	
+			border-radius:1em; 	
+			overflow: visible;
+		}
+		
+		.exann      	{
+			width:90%;		
+			margin-top:100px; 	
+			margin-left:25em; 	
+			margin-right:3em; 	
+			overflow: visible;
+		}
+		
+		.smallcontainer		{
+			width:65%;		
+			height:100%; 	
+			float:left; 	
+			border-radius:1em; 		
+			padding: 1em;	
+			border:2px solid;	
+			overflow: auto;
+		}
+		
+		.chart 				{
+			width:94%;		
+			height:75%; 	
+			float:left; 	
+			margin-top:30px; 		
+			padding: 1em;	
+			border-radius:2em; 	
+			zoom:100%
+		}
+		
+		.buttons			{
+			float:right; 	
+			margin-right:1em;
+			color:#000000
+		}
+		
+		.labels 			{
+			width:35%; 	
+			height:100%; 	
+			float:right; 	
+			right:0; 	
+			margin-top: 5em;
+			padding: 1em;	
+			text-align:left;
+			font-size:90%;
+			-webkit-transition: width 3s; 
+			transition: width 3s;			
+		}
+		
+		#titles {
+			width: 220px;
+			height:85%;
+			margin-left:1em;
+			overflow-y: auto;
+		}
+		
+		.dygraph-label.dygraph-title{
+			margin-top:-2em;
+			
+		}
+		
+		@media only screen and (max-width: 1026px) {
+			.summary{
+				display : none;
+			}
+			
+			#main{
+				margin-left: -18em;
+				right:2em;
+			}
+  
+			.bigcontainer{
+				width:100%;
+				zoom: 100%;
+			}
+			
+			#mySidebar{
+				display: none;
+			}
+			.labels 			{
+				font-size:80%;		
+				margin-top: 1em;
+			}
+			.interaction		{
+				margin-left:0; 
+				margin-right:0; 
+				margin-top:4em; 	
+				color:black;		
+				clear:left;	
+				font-size:70%;
+				overflow: auto
+			}
+		}	
+		
+		div.calendar.popup  {
+			margin-left: 30px !important;
+			margin-top: 10px; !important
+		}
+				
+		#main{
+			width: 90%;
+			right:2em;
+		}
+		
+		html, body {
+			font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+			height: 100%;
+			position: relative
+		}
+		
+
+	</style>
+</head>
+
+
+<body data-spy="scroll" data-target="#navbar" data-offset="100">
+	
+	<div class="header">
+		<div id="header_title"><button class="w3-button  w3-xlarge" onclick="w3_open()">&#9776;</button><a href="https://github.com/nilesh-tawari/ChronQC" target="_blank">ChronQC</a>  PANEL-A PLOTS</div>
+		<div id="report">Report generated on 2017-07-07</div>
+	</div>
+	
+	<div class="w3-sidebar w3-bar-block "  id="mySidebar">
+	<div id="mySidebar-2"  class="summary" class="collapse" ><button class="w3-bar-item w3-button w3-large" onclick="w3_close()"><h2 style="font-size: 150%; ">&#171; Plots</h2></button>
+		<div id="titles">
+		<nav id="navbar" class="navbar">
+			<ul class="nav" role="tablist">
+			
+							<li class="nav-item">
+				<a href="#g1">Historical runs FastQC_percent_duplicates (with 1 year rolling mean and &plusmn2 standard deviation)</a>
+			</li>
+			<li class="nav-item">
+				<a href="#g2">Historical runs FastQC_percent_gc (with 1 year rolling mean and &plusmn2 standard deviation)</a>
+			</li>
+			<li class="nav-item">
+				<a href="#g3">Historical runs FastQC_total_sequences (with 1 year rolling mean and &plusmn2 standard deviation)</a>
+			</li>
+			<li class="nav-item">
+				<a href="#g4">Historical runs QualiMap_30_x_pc (with 1 year rolling mean and &plusmn2 standard deviation)</a>
+			</li>
+			<li class="nav-item">
+				<a href="#g5">Historical monthly box-and-whisker plot for Bcftools_Stats_number_of_SNPs</a>
+			</li>
+			<li class="nav-item">
+				<a href="#g6">Historical monthly box-and-whisker plot for Bcftools_Stats_number_of_indels</a>
+			</li>
+			<li class="nav-item">
+				<a href="#g7">Historical runs Bcftools_Stats_tstv</a>
+			</li>
+			<li class="nav-item">
+				<a href="#g8">Historical runs QualiMap_median_coverage</a>
+			</li>
+			<li class="nav-item">
+				<a href="#g9">% of samples in each run with QualiMap_median_coverage ≥ 100</a>
+			</li>
+
+				
+			</ul>
+		</nav>
+		</div>
+		</div>
+	
+	</div>
+	
+	
+	<div id="main" >
+		
+		<div class="exann">
+		<b>Annotate by Date:</b>
+		<input readonly id="calendarButton" placeholder="YYYY-MM-DD" />
+		<input name="buttonExecute" onclick="makeDateQuery(document.getElementById('calendarButton').value)" type="button" value="submit" />
+		<br/><br/><input type=checkbox checked id='chk-zoom' onChange='syncchk()'><label for='chk-zoom'>Synchronize  Zoom</label>
+		</div>
+	
+	
+		
+
+			<h2 id="g1"></h2>
+			<div class="bigcontainer">
+			<div class="smallcontainer">
+			<div id="g1_divname" class = "chart"></div>
+			<div class="interaction"><br/><br/><b> Highlight Date Range:</b> 
+			<input readonly id="g1_fromdate" placeholder="from" size="10"/><b>:</b><input readonly id="g1_todate" placeholder="until" size="10"/>
+			<input name="buttonExecute" onclick="Highlight(document.getElementById('g1_fromdate').value,document.getElementById('g1_todate').value,g1_graphvar)" type="button" value="submit" />
+			<button id = "g1_restorebutton" class="buttons">All historical data</button>
+			<button id = "g1_yearbutton" class="buttons">1 year data</button>
+			</div></div><div id="g1_labeldiv" class= "labels" ></div></div>
+
+
+			
+
+			<h2 id="g2"></h2>
+			<div class="bigcontainer">
+			<div class="smallcontainer">
+			<div id="g2_divname" class = "chart"></div>
+			<div class="interaction"><br/><br/><b> Highlight Date Range:</b> 
+			<input readonly id="g2_fromdate" placeholder="from" size="10"/><b>:</b><input readonly id="g2_todate" placeholder="until" size="10"/>
+			<input name="buttonExecute" onclick="Highlight(document.getElementById('g2_fromdate').value,document.getElementById('g2_todate').value,g2_graphvar)" type="button" value="submit" />
+			<button id = "g2_restorebutton" class="buttons">All historical data</button>
+			<button id = "g2_yearbutton" class="buttons">1 year data</button>
+			</div></div><div id="g2_labeldiv" class= "labels" ></div></div>
+
+
+			
+
+			<h2 id="g3"></h2>
+			<div class="bigcontainer">
+			<div class="smallcontainer">
+			<div id="g3_divname" class = "chart"></div>
+			<div class="interaction"><br/><br/><b> Highlight Date Range:</b> 
+			<input readonly id="g3_fromdate" placeholder="from" size="10"/><b>:</b><input readonly id="g3_todate" placeholder="until" size="10"/>
+			<input name="buttonExecute" onclick="Highlight(document.getElementById('g3_fromdate').value,document.getElementById('g3_todate').value,g3_graphvar)" type="button" value="submit" />
+			<button id = "g3_restorebutton" class="buttons">All historical data</button>
+			<button id = "g3_yearbutton" class="buttons">1 year data</button>
+			</div></div><div id="g3_labeldiv" class= "labels" ></div></div>
+
+
+			
+
+			<h2 id="g4"></h2>
+			<div class="bigcontainer">
+			<div class="smallcontainer">
+			<div id="g4_divname" class = "chart"></div>
+			<div class="interaction"><br/><br/><b> Highlight Date Range:</b> 
+			<input readonly id="g4_fromdate" placeholder="from" size="10"/><b>:</b><input readonly id="g4_todate" placeholder="until" size="10"/>
+			<input name="buttonExecute" onclick="Highlight(document.getElementById('g4_fromdate').value,document.getElementById('g4_todate').value,g4_graphvar)" type="button" value="submit" />
+			<button id = "g4_restorebutton" class="buttons">All historical data</button>
+			<button id = "g4_yearbutton" class="buttons">1 year data</button>
+			</div></div><div id="g4_labeldiv" class= "labels" ></div></div>
+
+
+			
+
+			<h2 id="g5"></h2>
+			<div class="bigcontainer">
+			<div class="smallcontainer">
+			<div id="g5_divname" class = "chart"></div>
+			<div class="interaction"><br/><br/><b> Highlight Date Range:</b> 
+			<input readonly id="g5_fromdate" placeholder="from" size="10"/><b>:</b><input readonly id="g5_todate" placeholder="until" size="10"/>
+			<input name="buttonExecute" onclick="Highlight(document.getElementById('g5_fromdate').value,document.getElementById('g5_todate').value,g5_graphvar)" type="button" value="submit" />
+			<button id = "g5_restorebutton" class="buttons">All historical data</button>
+			<button id = "g5_yearbutton" class="buttons">1 year data</button>
+			</div></div><div id="g5_labeldiv" class= "labels" ></div></div>
+
+
+			
+
+			<h2 id="g6"></h2>
+			<div class="bigcontainer">
+			<div class="smallcontainer">
+			<div id="g6_divname" class = "chart"></div>
+			<div class="interaction"><br/><br/><b> Highlight Date Range:</b> 
+			<input readonly id="g6_fromdate" placeholder="from" size="10"/><b>:</b><input readonly id="g6_todate" placeholder="until" size="10"/>
+			<input name="buttonExecute" onclick="Highlight(document.getElementById('g6_fromdate').value,document.getElementById('g6_todate').value,g6_graphvar)" type="button" value="submit" />
+			<button id = "g6_restorebutton" class="buttons">All historical data</button>
+			<button id = "g6_yearbutton" class="buttons">1 year data</button>
+			</div></div><div id="g6_labeldiv" class= "labels" ></div></div>
+
+
+			
+
+			<h2 id="g7"></h2>
+			<div class="bigcontainer">
+			<div class="smallcontainer">
+			<div id="g7_divname" class = "chart"></div>
+			<div class="interaction"><br/><br/><b> Highlight Date Range:</b> 
+			<input readonly id="g7_fromdate" placeholder="from" size="10"/><b>:</b><input readonly id="g7_todate" placeholder="until" size="10"/>
+			<input name="buttonExecute" onclick="Highlight(document.getElementById('g7_fromdate').value,document.getElementById('g7_todate').value,g7_graphvar)" type="button" value="submit" />
+			<button id = "g7_restorebutton" class="buttons">All historical data</button>
+			<button id = "g7_yearbutton" class="buttons">1 year data</button>
+			</div></div><div id="g7_labeldiv" class= "labels" ></div></div>
+
+
+			
+
+			<h2 id="g8"></h2>
+			<div class="bigcontainer">
+			<div class="smallcontainer">
+			<div id="g8_divname" class = "chart"></div>
+			<div class="interaction"><br/><br/><b> Highlight Date Range:</b> 
+			<input readonly id="g8_fromdate" placeholder="from" size="10"/><b>:</b><input readonly id="g8_todate" placeholder="until" size="10"/>
+			<input name="buttonExecute" onclick="Highlight(document.getElementById('g8_fromdate').value,document.getElementById('g8_todate').value,g8_graphvar)" type="button" value="submit" />
+			<button id = "g8_restorebutton" class="buttons">All historical data</button>
+			<button id = "g8_yearbutton" class="buttons">1 year data</button>
+			</div></div><div id="g8_labeldiv" class= "labels" ></div></div>
+
+
+			
+
+			<h2 id="g9"></h2>
+			<div class="bigcontainer">
+			<div class="smallcontainer">
+			<div id="g9_divname" class = "chart"></div>
+			<div class="interaction"><br/><br/><b> Highlight Date Range:</b> 
+			<input readonly id="g9_fromdate" placeholder="from" size="10"/><b>:</b><input readonly id="g9_todate" placeholder="until" size="10"/>
+			<input name="buttonExecute" onclick="Highlight(document.getElementById('g9_fromdate').value,document.getElementById('g9_todate').value,g9_graphvar)" type="button" value="submit" />
+			<button id = "g9_restorebutton" class="buttons">All historical data</button>
+			<button id = "g9_yearbutton" class="buttons">1 year data</button>
+			</div></div><div id="g9_labeldiv" class= "labels" ></div></div>
+
+
+			
+
+	
+
+			
+		</div>	
+	
+		<script type = "text/javascript">
+
+		
+	function w3_open() {
+		document.getElementById("main").style.marginLeft = "1em";
+		document.getElementById("mySidebar").style.display = "block";
+		document.getElementById("mySidebar").style.width = "0";
+		document.getElementById("mySidebar-2").style.display = "block";
+		
+		var elements =document.getElementsByClassName("bigcontainer");
+		for (var i = 0; i < elements.length; i++) {
+			elements[i].style.width="90%";
+			elements[i].style.zoom="100%";
+		}
+		for (var i = 0; i < gs.length; i++) {
+			gs[i].resize()
+		}
+	}
+	
+	function w3_close() {
+		document.getElementById("mySidebar").style.display = "none";
+		document.getElementById("main").style.marginLeft = "-18em";
+		var elements =document.getElementsByClassName("bigcontainer");
+		for (var i = 0; i < elements.length; i++) {
+			elements[i].style.width="100%";
+			elements[i].style.zoom="100%";
+		}
+		//var elements =document.getElementsByClassName("chart");
+		//for (var i = 0; i < elements.length; i++) {
+		   // elements[i].style.top=0;
+			//elements[i].style.right=0
+			
+		//}
+		for (var i = 0; i < gs.length; i++) {
+			gs[i].resize()
+		}
+	}
+////////////////////////////////////////////////////////////////////////////////////////
+	
+	var $j = jQuery.noConflict();
+
+////////////////////////////////////////////////////////////////////////////////////////	
+	
+	
+		var runjson = '';
+		var runrequest= $j.ajax({ type: "GET",
+			url: "http://localhost:8000/runannotation",
+			async: false,
+			success : function(text){
+				runjson = text;
+			}
+		});
+		if(runjson.length==0){var obj = '';}
+		else {var obj = JSON.parse(runjson);}
+		
+		var datejson = '';
+		var daterequest= $j.ajax({ type: "GET",
+			url: "http://localhost:8000/dateannotation",
+			async: false,
+			success : function(text){
+				datejson = text;
+			}
+		});
+		if(datejson.length==0){var dateobj = '' }
+		else {var dateobj = JSON.parse(datejson);}
+		
+		
+///////////////////////////////////////////////////////////////////////////////////////
+
+	function makeQuery(Runname, date){
+		if (runrequest.status<600 && runrequest.status >=400 || runrequest.status ==0){
+			alert("Local server status off");
+		}
+		else{	
+			var annotation = prompt("RunName (copied to clipboard): " + run  , "Annotation");
+			if (annotation==null || annotation == "Annotation"){alert("Please enter valid annotation notes");}
+			$j.get("http://localhost:8000/dataQuery/"+ Runname+ "/"+ date +"/" + annotation, function(result){})
+			alert("Annotation Added!");
+			window.location.reload(true);
+		}
+	}
+	
+///////////////////////////////////////////////////////////////////////////////////////
+		
+	function makeDateQuery(Date){
+		if (daterequest.status >=400 && daterequest.status<600 || daterequest.status ==0){
+			alert("Local server status off");
+		}
+		else{	var Notes = prompt("Date: " + Date , "Annotation (not more than 10 characters)");
+			if( Date==null || Notes == null || Notes == "Annotation"){ alert("Annotation not added!") }
+			else if(Notes.length>10){alert("Annotation length must not exceed 10 characters")}
+			else{
+				Notes = Notes.toLowerCase()
+				$j.get("http://localhost:8000/datedataQuery/"+ Date+ "/" + Notes, function(result){})
+				alert("Annotation Added!");
+				window.location.reload(true);
+			}
+			return;
+		}
+	}
+///////////////////////////////////////////////////////////////////////////////////////
+
+	window.onload = function( ) {
+		Calendar.setup({dateField:'calendarButton',triggerElement : 'calendarButton'});
+			Calendar.setup({dateField:"g1_fromdate",triggerElement : "g1_fromdate"}); Calendar.setup({dateField:"g1_todate",triggerElement : "g1_todate"});
+			Calendar.setup({dateField:"g2_fromdate",triggerElement : "g2_fromdate"}); Calendar.setup({dateField:"g2_todate",triggerElement : "g2_todate"});
+			Calendar.setup({dateField:"g3_fromdate",triggerElement : "g3_fromdate"}); Calendar.setup({dateField:"g3_todate",triggerElement : "g3_todate"});
+			Calendar.setup({dateField:"g4_fromdate",triggerElement : "g4_fromdate"}); Calendar.setup({dateField:"g4_todate",triggerElement : "g4_todate"});
+			Calendar.setup({dateField:"g5_fromdate",triggerElement : "g5_fromdate"}); Calendar.setup({dateField:"g5_todate",triggerElement : "g5_todate"});
+			Calendar.setup({dateField:"g6_fromdate",triggerElement : "g6_fromdate"}); Calendar.setup({dateField:"g6_todate",triggerElement : "g6_todate"});
+			Calendar.setup({dateField:"g7_fromdate",triggerElement : "g7_fromdate"}); Calendar.setup({dateField:"g7_todate",triggerElement : "g7_todate"});
+			Calendar.setup({dateField:"g8_fromdate",triggerElement : "g8_fromdate"}); Calendar.setup({dateField:"g8_todate",triggerElement : "g8_todate"});
+			Calendar.setup({dateField:"g9_fromdate",triggerElement : "g9_fromdate"}); Calendar.setup({dateField:"g9_todate",triggerElement : "g9_todate"});
+
+	}
+
+////////////////////////////////////////////////////////////////////////////////////////
+	
+    function candlePlotter(e) {
+	
+		if (e.seriesIndex !== 0) return;
+		var BAR_WIDTH = 60;
+        var prices = [];
+        var price;
+        var sets = e.allSeriesPoints;
+
+        for (var p = 0 ; p < sets[0].length; p++) {
+			price = {
+				open : sets[0][p].yval,
+				close : sets[1][p].yval,
+				high : sets[2][p].yval,
+				low : sets[3][p].yval,
+				middle: sets[4][p].yval,
+				out: sets[5][p].yval,
+				openY : sets[0][p].y,
+				closeY : sets[1][p].y,
+				highY : sets[2][p].y,
+				lowY : sets[3][p].y,
+				middleY : sets[4][p].y,
+				outY : sets[5][p].y
+
+			};
+			prices.push(price);
+        }
+		
+        var area = e.plotArea;
+        var ctx = e.drawingContext;
+        ctx.strokeStyle = '#202020';
+		ctx.fillStyle="#ffffff";
+        ctx.lineWidth = 0.8;
+        for (p = 0 ; p < prices.length; p++) {
+			ctx.beginPath();
+
+			price = prices[p];
+			var topY = area.h * price.highY + area.y;
+			var midY = area.h * price.middleY + area.y;
+			var outlierY = area.h * price.outY + area.y;
+			var bottomY = area.h * price.lowY + area.y;
+			var centerX = area.x + sets[0][p].x * area.w;
+			var bodyY;
+
+			if (price.open > price.close) {
+				ctx.fillStyle ='#f2a104';
+				ctx.strokeStyle = "#bb1924";
+				bodyY = area.h * price.openY + area.y;
+			}
+			else {
+				ctx.fillStyle = '#ffd9b3';
+				ctx.strokeStyle = "#ffa64d";
+				ctx.lineWidth=1.5;
+				bodyY = area.h * price.closeY  + area.y;
+			}
+			var bodyHeight = area.h * Math.abs(price.openY - price.closeY);
+			ctx.fillRect(centerX - BAR_WIDTH / 2, bodyY, BAR_WIDTH,  bodyHeight);
+			ctx.strokeRect(centerX - BAR_WIDTH / 2, bodyY, BAR_WIDTH,  bodyHeight);
+			ctx.moveTo(centerX, topY);
+			ctx.lineTo(centerX, bottomY);
+			ctx.moveTo(centerX - BAR_WIDTH / 2, midY);
+			ctx.lineTo(centerX + BAR_WIDTH / 2, midY);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fillStyle = "#ff6666";
+			ctx.arc(centerX, outlierY, 3, 0, Math.PI * 2);
+			ctx.fill();
+        }
+
+    }
+
+
+	
+////////////////////////////////////////////////////////////////////////////
+
+	function Highlight(highlight_start,highlight_end,a){
+
+			area = a.plotter_.area
+			ctx = a.hidden_ctx_
+
+			var start = new Date(highlight_start);
+			var end = new Date(highlight_end);
+
+			if(start>end){
+				alert("Wrong Date ('Until' date is later than 'From' date)")
+				return
+			}
+			else if(moment(start).format("DD/MM/YYYY") == moment(end).format("DD/MM/YYYY")){
+				alert("Wrong Date ('Until' date is equal to 'From' date)")
+				return
+			}
+			else{
+				var left = a.toDomXCoord(start);
+				var right = a.toDomXCoord(end);
+
+				ctx.beginPath();
+				ctx.fillStyle = "rgba(255, 255, 102, 0.5)";
+				ctx.fillRect(left, area.y, right - left, area.h);
+			}
+	};
+
+////////////////////////////////////////////////////////////////////////
+
+	function copyToClipboard(textToCopy){
+		$j("body")
+			.append($j('<input type="text" name="fname" class="textToCopyInput"/>' )
+			.val(textToCopy))
+			.find(".textToCopyInput")
+			.select();
+		if (textToCopy != null){
+			var successful = document.execCommand('copy');
+			var msg = successful ? 'successful' : 'unsuccessful';
+
+		} else {
+			return ;
+		}
+		$j(".textToCopyInput").remove();
+	}
+
+/////////////////////////////////////////////////////////////////////////////
+
+	function syncchk() {
+        var zoom = document.getElementById('chk-zoom').checked;
+
+        sync.detach();
+        sync = Dygraph.synchronize(gs, {
+          zoom: zoom,
+          selection: true,
+          range: false
+        });
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+	function legendFormatter(data) {
+		if (data.x == null) {
+			return ' ';
+		}
+		var html =  data.xHTML;
+		//console.log(data.series)
+		return html;
+	}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+	var gs = [];
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+	
+		
+	g1_dataname = [[1475539200000,null,null,null,null],[1478217600000,null,51.7533333333,null,51.7533333333],[1478822400000,51.5924803999,52.1416666667,52.6908529334,52.53],[1479427200000,51.4806709478,52.9744444444,54.4682179411,54.64],[1480032000000,51.8591132177,53.585,55.3108867823,55.4166666667],[1480550400000,52.2186082448,53.7686666667,55.3187250885,54.5033333333],[1481155200000,52.4922492662,53.9427777778,55.3933062894,54.8133333333],[1483315200000,52.6023515688,53.9271428571,55.2519341455,53.8333333333],[1483920000000,52.7730954168,54.0416666667,55.3102379165,54.8433333333],[1484524800000,52.5949026285,53.8785185185,55.1621344085,52.5733333333],[1485129600000,52.2378363527,53.649,55.0601636473,51.5833333333],[1485734400000,51.905731874,53.4295454545,54.9533590351,51.235],[1486339200000,51.5202225043,53.19125,54.8622774957,50.57],[1486944000000,51.6029687814,53.2034615385,54.8039542956,53.35],[1487548800000,51.6974104133,53.2417857143,54.7861610152,53.74],[1488153600000,51.5518062447,53.1167777778,54.6817493109,51.3666666667],[1488758400000,51.6526319819,53.2071875,54.7617430181,54.5633333333],[1489363200000,51.7428831702,53.3267647059,54.9106462415,55.24],[1489968000000,51.8295084458,53.3876851852,54.9458619246,54.4233333333],[1490572800000,51.9091046401,53.4983333333,55.0875620266,55.49],[1491177600000,51.931242634,53.6814166667,55.4315906994,57.16],[1491782400000,51.988793714,53.695952381,55.4031110479,53.9866666667],[1492387200000,51.9551373892,53.6409848485,55.3268323077,52.4866666667],[1492992000000,52.0125122509,53.6629710145,55.3134297781,54.1466666667],[1495584000000,null,null,null,null]]
+	g1_runname = [[null,""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-7",""],["Run-8",""],["Run-9",""],["Run-10",""],["Run-11",""],["Run-12",""],["Run-13",""],["Run-14",""],["Run-15",""],["Run-16",""],["Run-17",""],[null,""]]
+	g1_samplename = [null,"SampID_6737 (48.86), SampID_6738 (49.3), SampID_6740 (57.1)","SampID_6741 (51.68), SampID_6743 (54.58), SampID_6744 (51.33)","SampID_6320 (54.15), SampID_6321 (54.31), SampID_6319 (55.46)","SampID_11676 (56.0), SampID_11677 (54.77), SampID_11678 (55.48)","SampID_13726 (55.24), SampID_13727 (54.34), SampID_13728 (53.93)","SampID_10895 (55.56), SampID_10893 (54.5), SampID_10894 (54.38)","SampID_26782 (54.23), SampID_26783 (52.93), SampID_26784 (54.34)","SampID_26776 (55.34), SampID_26777 (55.59), SampID_26778 (53.6)","SampID_10896 (53.14), SampID_10897 (54.0), SampID_10898 (50.58)","SampID_10901 (53.51), SampID_10902 (50.34), SampID_10900 (50.9)","SampID_10903 (50.93), SampID_10904 (51.54)","SampID_6745 (51.33), SampID_6742 (52.62), SampID_6739 (47.76)","SampID_7170 (53.26), SampID_7173 (52.53), SampID_7176 (54.26)","SampID_7185 (53.88), SampID_7179 (52.74), SampID_7182 (54.6)","SampID_7171 (51.47), SampID_7174 (50.61), SampID_7177 (52.02)","SampID_7180 (54.11), SampID_7184 (55.97), SampID_7186 (53.61)","SampID_7187 (55.0), SampID_7188 (56.89), SampID_7191 (53.83)","SampID_7196 (54.11), SampID_7193 (54.72), SampID_7194 (54.44)","SampID_7199 (58.67), SampID_7198 (53.11), SampID_7197 (54.69)","SampID_7201 (55.9), SampID_7202 (58.42)","SampID_6312 (55.59), SampID_6316 (52.44), SampID_6317 (53.93)","SampID_6536 (52.02), SampID_6537 (51.69), SampID_6538 (53.75)","SampID_11686 (55.99), SampID_11657 (53.53), SampID_11687 (52.92)",null]
+
+	for (j = 0; j < g1_dataname.length; j++){
+		g1_dataname[j][0] = new Date(g1_dataname[j][0])
+	}
+	for (j = 0; j < g1_runname.length; j++){
+		for (i = 0; i < obj.length; i++){
+			var ann = obj[i]
+			if(ann.Run == g1_runname[j][0]){
+				g1_runname[j][1]=ann.Annotation
+			}else{}
+		}
+	}
+
+	g1_graphvar = new Dygraph(
+		document.getElementById("g1_divname"),
+		g1_dataname,	
+		{
+			labels: [ "Date","Lower" , "Mean", "Upper", "Scatter"],
+			labelsDiv: document.getElementById("g1_labeldiv"),
+			labelsSeparateLines: true,
+			legend: "always",
+			title: 'Historical runs FastQC_percent_duplicates (with 1 year rolling mean and &plusmn2 standard deviation)',
+			xlabel: 'Date',
+			ylabel: 'Mean FastQC_percent_duplicates per run',
+			showRangeSelector: true,
+			rangeSelectorHeight: 20,
+			rangeSelectorPlotFillColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotFillGradientColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotStrokeColor: "rgba(0,0,0,0)",
+			highlightSeriesOpts: { highlightCircleSize : 5 },
+			interactionModel: Dygraph.defaultInteractionModel,
+			includeZero: true,	
+			displayAnnotations: true,
+			drawHighlightPointCallback: Dygraph.Circles.HEXAGON,
+			axisLabelFontSize: 10,
+			titleHeight: 25,
+			xLabelHeight: 15,
+			yLabelWidth: 15,
+			legendFormatter: legendFormatter,
+			axes: {
+				x: {	
+					valueFormatter: function me(d,opt,se,dy,row,col) {
+						var text = [], 
+						data = g1_dataname[row],
+						run = g1_runname[row],
+						sample = g1_samplename[row];
+						
+						text = "<b>Run Name: </b>".fontcolor("#800000") + run[col] 
+								+ "<br/><b>Sample Name (y-value): </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>" 
+								+ "<br><b>Date:</b> ".fontcolor("#800080") + moment(d).format("DD/MM/YYYY") 
+								+ "<br/><b> Mean: </b>".fontcolor("#006400") + data[2]   
+								+ "<br/><b> 2SD: </b>".fontcolor("#ff0000") + data[1] + ' - ' + data[3]  
+								+ "<br/><b> %  of Duplicates: </b>".fontcolor("#000080") + data[4] 
+								+ '</font>'
+						
+						
+						if (run[1].length == 0){return text}
+						else if (run[1].length != 0) {
+							note = "<br/><b>Note: </b>" + run[1] 
+							text = 	text + note.fontcolor("red") 
+							return text
+						}
+						else {console.log("Error in labels")}
+					},
+				},	
+			},
+			series: {
+				"Lower" : {
+					strokePattern: Dygraph.DASHED_LINE ,
+					color: "#ff0000",
+					strokeWidth: 2,
+				},
+				"Mean" : {
+					drawPoints: false,
+					color: "#006400",
+					strokeWidth: 2,
+				},
+				"Upper": {	
+					strokePattern: Dygraph.DASHED_LINE ,
+					color: "#ff0000",
+					strokeWidth: 2, 
+				},
+				"Scatter" : {
+					drawPoints: true,
+					color: "#0080ff",
+					pointSize: 3,
+					strokeWidth: 0,
+				}
+			},
+			underlayCallback: function(canvas, area, g) {		
+				
+				ctx = g.hidden_ctx_;
+				ctx.fillStyle = "#0080ff";
+				ctx.strokeStyle = "#0080ff";
+				
+				for (i = 0; i < g1_dataname.length; i++) { 
+								
+					var point = g1_dataname[i][4],
+					note = g1_runname[i][1],
+					date = g1_dataname[i][0];
+					
+					if (g1_runname[i][0] == null){}
+					else if(note.length != 0){
+					
+						mutated = g.toDomCoords(date, point)
+						ctx.beginPath();
+						ctx.fillText("A",mutated[0]-3,mutated[1]-10);
+						ctx.strokeRect(mutated[0]-5.5,mutated[1]-19, 12,12)
+						ctx.moveTo(mutated[0],mutated[1]);
+						ctx.lineTo(mutated[0],mutated[1]-7);
+						ctx.closePath();
+						ctx.stroke();
+					}
+				}
+				var [bottom,top] = g.yAxisRange();
+				for(i = 0; i < dateobj.length; i++) {
+					date = dateobj[i];
+					position = g.toDomCoords(date.Annotated_date,bottom);
+					dateobj[i].key3 = position;
+					canvas.fillText(dateobj[i].Notes,dateobj[i].key3[0]+2,dateobj[i].key3[1]-15);
+					canvas.strokeRect(dateobj[i].key3[0],dateobj[i].key3[1]-25,dateobj[i].Notes.length*7,15)
+					canvas.beginPath();
+					canvas.moveTo(dateobj[i].key3[0],dateobj[i].key3[1]);
+					canvas.lineTo(dateobj[i].key3[0],dateobj[i].key3[1]-10);
+					canvas.closePath();
+					canvas.stroke();
+				}
+			},
+			pointClickCallback: function(e, point) {			
+				run = g1_runname[point.idx][0]
+				date = g1_dataname[point.idx][0]
+				date =  moment(date).format("DD-MM-YYYY")
+				copyToClipboard(run)
+				makeQuery(run,date)
+			},
+		}
+	);
+
+	document.getElementById("g1_restorebutton").onclick 	= function() { restorePositioning(g1_graphvar); };
+	document.getElementById("g1_yearbutton").onclick 	= 	function() 	{g1_graphvar.updateOptions({dateWindow: [new Date('2016-10-04'),new Date('2017-05-24 00:00:00')]});};
+	gs.push(g1_graphvar);
+	
+	
+	g2_dataname = [[1475539200000,null,null,null,null],[1478217600000,null,46.3333333333,null,46.3333333333],[1478822400000,45.9309644063,46.1666666667,46.4023689271,46.0],[1479427200000,45.5470336855,47.0,48.4529663145,48.6666666667],[1480032000000,44.9484177729,46.5,48.0515822271,45.0],[1480550400000,44.6981492899,46.2,47.7018507101,45.0],[1481155200000,43.792870757,45.6666666667,47.5404625763,43.0],[1483315200000,43.6057298768,45.4285714286,47.2514129803,44.0],[1483920000000,43.4884170178,45.25,47.0115829822,44.0],[1484524800000,43.1895365848,45.0,46.8104634152,43.0],[1485129600000,42.9796757852,44.8,46.6203242148,43.0],[1485734400000,42.8261792047,44.6363636364,46.4465480681,43.0],[1486339200000,42.9797349397,44.75,46.5202650603,46.0],[1486944000000,43.0124356679,45.0769230769,47.141410486,49.0],[1487548800000,43.0726062627,45.4047619048,47.7369175469,49.6666666667],[1488153600000,43.2326827052,45.5777777778,47.9228728504,48.0],[1488758400000,43.3600824475,45.8125,48.2649175525,49.3333333333],[1489363200000,43.4762018691,46.0588235294,48.6414451898,50.0],[1489968000000,43.6190475405,46.2407407407,48.8624339409,49.3333333333],[1490572800000,43.7487604974,46.4385964912,49.1284324851,50.0],[1491177600000,43.8855575935,46.5916666667,49.2977757398,49.5],[1491782400000,44.0164885698,46.7380952381,49.4597019064,49.6666666667],[1492387200000,44.1414689801,46.8409090909,49.5403492017,49.0],[1492992000000,44.095706122,46.7608695652,49.4260330085,45.0],[1495584000000,null,null,null,null]]
+	g2_runname = [[null,""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-7",""],["Run-8",""],["Run-9",""],["Run-10",""],["Run-11",""],["Run-12",""],["Run-13",""],["Run-14",""],["Run-15",""],["Run-16",""],["Run-17",""],[null,""]]
+	g2_samplename = [null,"SampID_6737 (46.0), SampID_6738 (45.0), SampID_6740 (48.0)","SampID_6741 (46.0), SampID_6743 (46.0), SampID_6744 (46.0)","SampID_6320 (49.0), SampID_6321 (48.0), SampID_6319 (49.0)","SampID_11676 (45.0), SampID_11677 (45.0), SampID_11678 (45.0)","SampID_13726 (45.0), SampID_13727 (45.0), SampID_13728 (45.0)","SampID_10895 (43.0), SampID_10893 (43.0), SampID_10894 (43.0)","SampID_26782 (44.0), SampID_26783 (44.0), SampID_26784 (44.0)","SampID_26776 (44.0), SampID_26777 (44.0), SampID_26778 (44.0)","SampID_10896 (43.0), SampID_10897 (43.0), SampID_10898 (43.0)","SampID_10901 (43.0), SampID_10902 (43.0), SampID_10900 (43.0)","SampID_10903 (43.0), SampID_10904 (43.0)","SampID_6745 (47.0), SampID_6742 (46.0), SampID_6739 (45.0)","SampID_7170 (49.0), SampID_7173 (49.0), SampID_7176 (49.0)","SampID_7185 (50.0), SampID_7179 (49.0), SampID_7182 (50.0)","SampID_7171 (48.0), SampID_7174 (48.0), SampID_7177 (48.0)","SampID_7180 (49.0), SampID_7184 (49.0), SampID_7186 (50.0)","SampID_7187 (50.0), SampID_7188 (50.0), SampID_7191 (50.0)","SampID_7196 (49.0), SampID_7193 (49.0), SampID_7194 (50.0)","SampID_7199 (50.0), SampID_7198 (50.0), SampID_7197 (50.0)","SampID_7201 (50.0), SampID_7202 (49.0)","SampID_6312 (50.0), SampID_6316 (50.0), SampID_6317 (49.0)","SampID_6536 (49.0), SampID_6537 (49.0), SampID_6538 (49.0)","SampID_11686 (45.0), SampID_11657 (45.0), SampID_11687 (45.0)",null]
+
+	for (j = 0; j < g2_dataname.length; j++){
+		g2_dataname[j][0] = new Date(g2_dataname[j][0])
+	}
+	for (j = 0; j < g2_runname.length; j++){
+		for (i = 0; i < obj.length; i++){
+			var ann = obj[i]
+			if(ann.Run == g2_runname[j][0]){
+				g2_runname[j][1]=ann.Annotation
+			}else{}
+		}
+	}
+
+	g2_graphvar = new Dygraph(
+		document.getElementById("g2_divname"),
+		g2_dataname,	
+		{
+			labels: [ "Date","Lower" , "Mean", "Upper", "Scatter"],
+			labelsDiv: document.getElementById("g2_labeldiv"),
+			labelsSeparateLines: true,
+			legend: "always",
+			title: 'Historical runs FastQC_percent_gc (with 1 year rolling mean and &plusmn2 standard deviation)',
+			xlabel: 'Date',
+			ylabel: 'Mean FastQC_percent_gc per run',
+			showRangeSelector: true,
+			rangeSelectorHeight: 20,
+			rangeSelectorPlotFillColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotFillGradientColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotStrokeColor: "rgba(0,0,0,0)",
+			highlightSeriesOpts: { highlightCircleSize : 5 },
+			interactionModel: Dygraph.defaultInteractionModel,
+			includeZero: true,	
+			displayAnnotations: true,
+			drawHighlightPointCallback: Dygraph.Circles.HEXAGON,
+			axisLabelFontSize: 10,
+			titleHeight: 25,
+			xLabelHeight: 15,
+			yLabelWidth: 15,
+			legendFormatter: legendFormatter,
+			axes: {
+				x: {	
+					valueFormatter: function me(d,opt,se,dy,row,col) {
+						var text = [], 
+						data = g2_dataname[row],
+						run = g2_runname[row],
+						sample = g2_samplename[row];
+						
+						text = "<b>Run Name: </b>".fontcolor("#800000") + run[col] 
+								+ "<br/><b>Sample Name (y-value): </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>" 
+								+ "<br><b>Date:</b> ".fontcolor("#800080") + moment(d).format("DD/MM/YYYY") 
+								+ "<br/><b> Mean: </b>".fontcolor("#006400") + data[2]   
+								+ "<br/><b> 2SD: </b>".fontcolor("#ff0000") + data[1] + ' - ' + data[3]  
+								+ "<br/><b> %  of Duplicates: </b>".fontcolor("#000080") + data[4] 
+								+ '</font>'
+						
+						
+						if (run[1].length == 0){return text}
+						else if (run[1].length != 0) {
+							note = "<br/><b>Note: </b>" + run[1] 
+							text = 	text + note.fontcolor("red") 
+							return text
+						}
+						else {console.log("Error in labels")}
+					},
+				},	
+			},
+			series: {
+				"Lower" : {
+					strokePattern: Dygraph.DASHED_LINE ,
+					color: "#ff0000",
+					strokeWidth: 2,
+				},
+				"Mean" : {
+					drawPoints: false,
+					color: "#006400",
+					strokeWidth: 2,
+				},
+				"Upper": {	
+					strokePattern: Dygraph.DASHED_LINE ,
+					color: "#ff0000",
+					strokeWidth: 2, 
+				},
+				"Scatter" : {
+					drawPoints: true,
+					color: "#0080ff",
+					pointSize: 3,
+					strokeWidth: 0,
+				}
+			},
+			underlayCallback: function(canvas, area, g) {		
+				
+				ctx = g.hidden_ctx_;
+				ctx.fillStyle = "#0080ff";
+				ctx.strokeStyle = "#0080ff";
+				
+				for (i = 0; i < g2_dataname.length; i++) { 
+								
+					var point = g2_dataname[i][4],
+					note = g2_runname[i][1],
+					date = g2_dataname[i][0];
+					
+					if (g2_runname[i][0] == null){}
+					else if(note.length != 0){
+					
+						mutated = g.toDomCoords(date, point)
+						ctx.beginPath();
+						ctx.fillText("A",mutated[0]-3,mutated[1]-10);
+						ctx.strokeRect(mutated[0]-5.5,mutated[1]-19, 12,12)
+						ctx.moveTo(mutated[0],mutated[1]);
+						ctx.lineTo(mutated[0],mutated[1]-7);
+						ctx.closePath();
+						ctx.stroke();
+					}
+				}
+				var [bottom,top] = g.yAxisRange();
+				for(i = 0; i < dateobj.length; i++) {
+					date = dateobj[i];
+					position = g.toDomCoords(date.Annotated_date,bottom);
+					dateobj[i].key3 = position;
+					canvas.fillText(dateobj[i].Notes,dateobj[i].key3[0]+2,dateobj[i].key3[1]-15);
+					canvas.strokeRect(dateobj[i].key3[0],dateobj[i].key3[1]-25,dateobj[i].Notes.length*7,15)
+					canvas.beginPath();
+					canvas.moveTo(dateobj[i].key3[0],dateobj[i].key3[1]);
+					canvas.lineTo(dateobj[i].key3[0],dateobj[i].key3[1]-10);
+					canvas.closePath();
+					canvas.stroke();
+				}
+			},
+			pointClickCallback: function(e, point) {			
+				run = g2_runname[point.idx][0]
+				date = g2_dataname[point.idx][0]
+				date =  moment(date).format("DD-MM-YYYY")
+				copyToClipboard(run)
+				makeQuery(run,date)
+			},
+		}
+	);
+
+	document.getElementById("g2_restorebutton").onclick 	= function() { restorePositioning(g2_graphvar); };
+	document.getElementById("g2_yearbutton").onclick 	= 	function() 	{g2_graphvar.updateOptions({dateWindow: [new Date('2016-10-04'),new Date('2017-05-24 00:00:00')]});};
+	gs.push(g2_graphvar);
+	
+	
+	g3_dataname = [[1475539200000,null,null,null,null],[1478217600000,null,127893137.3333333284,null,127893137.3333333284],[1478822400000,93585035.287494272,113682256.1666666567,133779477.0458390415,99471375.0],[1479427200000,99979380.1451091766,114220847.222222209,128462314.2993352413,115298029.3333333284],[1480032000000,103879270.5136265755,116099102.5833333284,128318934.6530400813,121733868.6666666716],[1480550400000,106585931.61674954,119009444.5333333313,131432957.4499171227,130650812.3333333284],[1481155200000,108639460.7242866158,120028079.8888888806,131416699.0534911454,125121256.6666666716],[1483315200000,102194896.4057422131,129620225.5238095224,157045554.6418768167,187173099.3333333433],[1483920000000,103681173.8118007034,129112649.125,154544124.4381992817,125559614.3333333284],[1484524800000,104611170.3897506595,128476553.3703703582,152341936.350990057,123387787.3333333284],[1485129600000,105007075.426946491,127656514.4333333224,150305953.4397201538,120276164.0],[1485734400000,105892487.7669847906,127396880.0757575631,148901272.3845303357,124800536.5],[1486339200000,106946629.0724057108,127451123.6527777761,147955618.2331498265,128047803.0],[1486944000000,108126229.9615492374,127797464.9615384638,147468699.9615277052,131953560.6666666716],[1487548800000,107601111.4882997125,126838331.6547619104,146075551.8212240934,114369598.6666666716],[1488153600000,108481301.366646871,127034278.1666666716,145587254.9666864872,129777529.3333333284],[1488758400000,109643735.1032880843,127896143.0104166716,146148550.917545259,140824115.6666666567],[1489363200000,110613028.7584726661,128414717.7352941185,146216406.712115556,136711913.3333333433],[1489968000000,110664880.4306262732,128017206.4907407463,145369532.5508552194,121259515.3333333284],[1490572800000,111087247.4029068649,127952999.4298245758,144818751.4567422867,126797272.3333333284],[1491177600000,111026045.0388478786,127543698.8833333552,144061352.7278188169,119766988.5],[1491782400000,106551558.8377173543,125403382.7142857313,144255206.5908541083,82597059.3333333284],[1492387200000,106705660.8175166696,125143496.1666666865,143581331.5158166885,119685878.6666666716],[1492992000000,107237637.350092262,125260259.2898550928,143282881.2296179235,127829048.0],[1495584000000,null,null,null,null]]
+	g3_runname = [[null,""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-7",""],["Run-8",""],["Run-9",""],["Run-10",""],["Run-11",""],["Run-12",""],["Run-13",""],["Run-14",""],["Run-15",""],["Run-16",""],["Run-17",""],[null,""]]
+	g3_samplename = [null,"SampID_6737 (140463796.0), SampID_6738 (107349970.0), SampID_6740 (135865646.0)","SampID_6741 (109887255.0), SampID_6743 (94542970.0), SampID_6744 (93983900.0)","SampID_6320 (98160014.0), SampID_6321 (121622847.0), SampID_6319 (126111227.0)","SampID_11676 (117136961.0), SampID_11677 (120414358.0), SampID_11678 (127650287.0)","SampID_13726 (145198842.0), SampID_13727 (128644834.0), SampID_13728 (118108761.0)","SampID_10895 (122479955.0), SampID_10893 (126438578.0), SampID_10894 (126445237.0)","SampID_26782 (178251504.0), SampID_26783 (149991585.0), SampID_26784 (233276209.0)","SampID_26776 (140460936.0), SampID_26777 (115626814.0), SampID_26778 (120591093.0)","SampID_10896 (142147419.0), SampID_10897 (119708995.0), SampID_10898 (108306948.0)","SampID_10901 (120718823.0), SampID_10902 (113137811.0), SampID_10900 (126971858.0)","SampID_10903 (135493757.0), SampID_10904 (114107316.0)","SampID_6745 (158136347.0), SampID_6742 (108728113.0), SampID_6739 (117278949.0)","SampID_7170 (130716078.0), SampID_7173 (138839971.0), SampID_7176 (126304633.0)","SampID_7185 (142384297.0), SampID_7179 (138918753.0), SampID_7182 (61805746.0)","SampID_7171 (130749196.0), SampID_7174 (130471479.0), SampID_7177 (128111913.0)","SampID_7180 (123554852.0), SampID_7184 (180043306.0), SampID_7186 (118874189.0)","SampID_7187 (122414446.0), SampID_7188 (138930402.0), SampID_7191 (148790892.0)","SampID_7196 (125364357.0), SampID_7193 (116135117.0), SampID_7194 (122279072.0)","SampID_7199 (117142874.0), SampID_7198 (122381878.0), SampID_7197 (140867065.0)","SampID_7201 (116403504.0), SampID_7202 (123130473.0)","SampID_6312 (77461211.0), SampID_6316 (77053710.0), SampID_6317 (93276257.0)","SampID_6536 (116594687.0), SampID_6537 (115837750.0), SampID_6538 (126625199.0)","SampID_11686 (145886111.0), SampID_11657 (109390228.0), SampID_11687 (128210805.0)",null]
+
+	for (j = 0; j < g3_dataname.length; j++){
+		g3_dataname[j][0] = new Date(g3_dataname[j][0])
+	}
+	for (j = 0; j < g3_runname.length; j++){
+		for (i = 0; i < obj.length; i++){
+			var ann = obj[i]
+			if(ann.Run == g3_runname[j][0]){
+				g3_runname[j][1]=ann.Annotation
+			}else{}
+		}
+	}
+
+	g3_graphvar = new Dygraph(
+		document.getElementById("g3_divname"),
+		g3_dataname,	
+		{
+			labels: [ "Date","Lower" , "Mean", "Upper", "Scatter"],
+			labelsDiv: document.getElementById("g3_labeldiv"),
+			labelsSeparateLines: true,
+			legend: "always",
+			title: 'Historical runs FastQC_total_sequences (with 1 year rolling mean and &plusmn2 standard deviation)',
+			xlabel: 'Date',
+			ylabel: 'Mean FastQC_total_sequences per run',
+			showRangeSelector: true,
+			rangeSelectorHeight: 20,
+			rangeSelectorPlotFillColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotFillGradientColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotStrokeColor: "rgba(0,0,0,0)",
+			highlightSeriesOpts: { highlightCircleSize : 5 },
+			interactionModel: Dygraph.defaultInteractionModel,
+			includeZero: true,	
+			displayAnnotations: true,
+			drawHighlightPointCallback: Dygraph.Circles.HEXAGON,
+			axisLabelFontSize: 10,
+			titleHeight: 25,
+			xLabelHeight: 15,
+			yLabelWidth: 15,
+			legendFormatter: legendFormatter,
+			axes: {
+				x: {	
+					valueFormatter: function me(d,opt,se,dy,row,col) {
+						var text = [], 
+						data = g3_dataname[row],
+						run = g3_runname[row],
+						sample = g3_samplename[row];
+						
+						text = "<b>Run Name: </b>".fontcolor("#800000") + run[col] 
+								+ "<br/><b>Sample Name (y-value): </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>" 
+								+ "<br><b>Date:</b> ".fontcolor("#800080") + moment(d).format("DD/MM/YYYY") 
+								+ "<br/><b> Mean: </b>".fontcolor("#006400") + data[2]   
+								+ "<br/><b> 2SD: </b>".fontcolor("#ff0000") + data[1] + ' - ' + data[3]  
+								+ "<br/><b> %  of Duplicates: </b>".fontcolor("#000080") + data[4] 
+								+ '</font>'
+						
+						
+						if (run[1].length == 0){return text}
+						else if (run[1].length != 0) {
+							note = "<br/><b>Note: </b>" + run[1] 
+							text = 	text + note.fontcolor("red") 
+							return text
+						}
+						else {console.log("Error in labels")}
+					},
+				},	
+			},
+			series: {
+				"Lower" : {
+					strokePattern: Dygraph.DASHED_LINE ,
+					color: "#ff0000",
+					strokeWidth: 2,
+				},
+				"Mean" : {
+					drawPoints: false,
+					color: "#006400",
+					strokeWidth: 2,
+				},
+				"Upper": {	
+					strokePattern: Dygraph.DASHED_LINE ,
+					color: "#ff0000",
+					strokeWidth: 2, 
+				},
+				"Scatter" : {
+					drawPoints: true,
+					color: "#0080ff",
+					pointSize: 3,
+					strokeWidth: 0,
+				}
+			},
+			underlayCallback: function(canvas, area, g) {		
+				
+				ctx = g.hidden_ctx_;
+				ctx.fillStyle = "#0080ff";
+				ctx.strokeStyle = "#0080ff";
+				
+				for (i = 0; i < g3_dataname.length; i++) { 
+								
+					var point = g3_dataname[i][4],
+					note = g3_runname[i][1],
+					date = g3_dataname[i][0];
+					
+					if (g3_runname[i][0] == null){}
+					else if(note.length != 0){
+					
+						mutated = g.toDomCoords(date, point)
+						ctx.beginPath();
+						ctx.fillText("A",mutated[0]-3,mutated[1]-10);
+						ctx.strokeRect(mutated[0]-5.5,mutated[1]-19, 12,12)
+						ctx.moveTo(mutated[0],mutated[1]);
+						ctx.lineTo(mutated[0],mutated[1]-7);
+						ctx.closePath();
+						ctx.stroke();
+					}
+				}
+				var [bottom,top] = g.yAxisRange();
+				for(i = 0; i < dateobj.length; i++) {
+					date = dateobj[i];
+					position = g.toDomCoords(date.Annotated_date,bottom);
+					dateobj[i].key3 = position;
+					canvas.fillText(dateobj[i].Notes,dateobj[i].key3[0]+2,dateobj[i].key3[1]-15);
+					canvas.strokeRect(dateobj[i].key3[0],dateobj[i].key3[1]-25,dateobj[i].Notes.length*7,15)
+					canvas.beginPath();
+					canvas.moveTo(dateobj[i].key3[0],dateobj[i].key3[1]);
+					canvas.lineTo(dateobj[i].key3[0],dateobj[i].key3[1]-10);
+					canvas.closePath();
+					canvas.stroke();
+				}
+			},
+			pointClickCallback: function(e, point) {			
+				run = g3_runname[point.idx][0]
+				date = g3_dataname[point.idx][0]
+				date =  moment(date).format("DD-MM-YYYY")
+				copyToClipboard(run)
+				makeQuery(run,date)
+			},
+		}
+	);
+
+	document.getElementById("g3_restorebutton").onclick 	= function() { restorePositioning(g3_graphvar); };
+	document.getElementById("g3_yearbutton").onclick 	= 	function() 	{g3_graphvar.updateOptions({dateWindow: [new Date('2016-10-04'),new Date('2017-05-24 00:00:00')]});};
+	gs.push(g3_graphvar);
+	
+	
+	g4_dataname = [[1475539200000,null,null,null,null],[1478217600000,null,85.04,null,85.04],[1478822400000,84.6823956245,85.9033333333,87.1242710422,86.7666666667],[1479427200000,84.2002342624,85.4122222222,86.6242101821,84.43],[1480032000000,83.6449753938,87.0316666667,90.4183579395,91.89],[1480550400000,84.326944267,88.076,91.825055733,92.2533333333],[1481155200000,84.6706277602,88.0261111111,91.3815944621,87.7766666667],[1483315200000,85.1160135868,88.799047619,92.4820816513,93.4366666667],[1483920000000,85.578201363,89.0783333333,92.5784653036,91.0333333333],[1484524800000,85.5545738787,88.8814814815,92.2083890843,87.3066666667],[1485129600000,85.5778530074,88.7443333333,91.9108136592,87.51],[1485734400000,85.651655703,88.6666666667,91.6816776303,87.89],[1486339200000,85.7794325136,88.6544444444,91.5294563753,88.52],[1486944000000,85.9117567564,88.6646153846,91.4174740128,88.7866666667],[1487548800000,84.5344669195,88.0469047619,91.5593426044,80.0166666667],[1488153600000,84.7304857191,88.1306666667,91.5308476142,89.3033333333],[1488758400000,84.9278659215,88.24375,91.5596340785,89.94],[1489363200000,85.098145633,88.3270588235,91.5559720141,89.66],[1489968000000,85.2276341132,88.3640740741,91.5005140349,88.9933333333],[1490572800000,85.3474987593,88.3994736842,91.4514486091,89.0366666667],[1491177600000,85.4458320542,88.4175,91.3891679458,88.76],[1491782400000,83.4093347018,87.7206349206,92.0319351394,73.7833333333],[1492387200000,83.4732026629,87.6840909091,91.8949791553,86.9166666667],[1492992000000,83.6589224677,87.8428985507,92.0268746337,91.3366666667],[1495584000000,null,null,null,null]]
+	g4_runname = [[null,""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-7",""],["Run-8",""],["Run-9",""],["Run-10",""],["Run-11",""],["Run-12",""],["Run-13",""],["Run-14",""],["Run-15",""],["Run-16",""],["Run-17",""],[null,""]]
+	g4_samplename = [null,"SampID_6737 (83.68), SampID_6738 (79.81), SampID_6740 (91.63)","SampID_6741 (88.71), SampID_6743 (85.03), SampID_6744 (86.56)","SampID_6320 (81.06), SampID_6321 (85.91), SampID_6319 (86.32)","SampID_11676 (91.7), SampID_11677 (91.62), SampID_11678 (92.35)","SampID_13726 (93.04), SampID_13727 (92.31), SampID_13728 (91.41)","SampID_10895 (87.44), SampID_10893 (87.9), SampID_10894 (87.99)","SampID_26782 (93.2), SampID_26783 (92.49), SampID_26784 (94.62)","SampID_26776 (92.04), SampID_26777 (90.35), SampID_26778 (90.71)","SampID_10896 (89.57), SampID_10897 (87.28), SampID_10898 (85.07)","SampID_10901 (87.73), SampID_10902 (86.27), SampID_10900 (88.53)","SampID_10903 (89.23), SampID_10904 (86.55)","SampID_6745 (92.42), SampID_6742 (88.91), SampID_6739 (84.23)","SampID_7170 (89.81), SampID_7173 (86.34), SampID_7176 (90.21)","SampID_7185 (90.54), SampID_7179 (91.11), SampID_7182 (58.4)","SampID_7171 (91.04), SampID_7174 (85.88), SampID_7177 (90.99)","SampID_7180 (89.1), SampID_7184 (92.6), SampID_7186 (88.12)","SampID_7187 (88.69), SampID_7188 (90.33), SampID_7191 (89.96)","SampID_7196 (89.71), SampID_7193 (88.37), SampID_7194 (88.9)","SampID_7199 (88.58), SampID_7198 (88.69), SampID_7197 (89.84)","SampID_7201 (88.5), SampID_7202 (89.02)","SampID_6312 (69.28), SampID_6316 (71.54), SampID_6317 (80.53)","SampID_6536 (86.19), SampID_6537 (85.84), SampID_6538 (88.72)","SampID_11686 (93.01), SampID_11657 (88.89), SampID_11687 (92.11)",null]
+
+	for (j = 0; j < g4_dataname.length; j++){
+		g4_dataname[j][0] = new Date(g4_dataname[j][0])
+	}
+	for (j = 0; j < g4_runname.length; j++){
+		for (i = 0; i < obj.length; i++){
+			var ann = obj[i]
+			if(ann.Run == g4_runname[j][0]){
+				g4_runname[j][1]=ann.Annotation
+			}else{}
+		}
+	}
+
+	g4_graphvar = new Dygraph(
+		document.getElementById("g4_divname"),
+		g4_dataname,	
+		{
+			labels: [ "Date","Lower" , "Mean", "Upper", "Scatter"],
+			labelsDiv: document.getElementById("g4_labeldiv"),
+			labelsSeparateLines: true,
+			legend: "always",
+			title: 'Historical runs QualiMap_30_x_pc (with 1 year rolling mean and &plusmn2 standard deviation)',
+			xlabel: 'Date',
+			ylabel: 'Mean QualiMap_30_x_pc per run',
+			showRangeSelector: true,
+			rangeSelectorHeight: 20,
+			rangeSelectorPlotFillColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotFillGradientColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotStrokeColor: "rgba(0,0,0,0)",
+			highlightSeriesOpts: { highlightCircleSize : 5 },
+			interactionModel: Dygraph.defaultInteractionModel,
+			includeZero: true,	
+			displayAnnotations: true,
+			drawHighlightPointCallback: Dygraph.Circles.HEXAGON,
+			axisLabelFontSize: 10,
+			titleHeight: 25,
+			xLabelHeight: 15,
+			yLabelWidth: 15,
+			legendFormatter: legendFormatter,
+			axes: {
+				x: {	
+					valueFormatter: function me(d,opt,se,dy,row,col) {
+						var text = [], 
+						data = g4_dataname[row],
+						run = g4_runname[row],
+						sample = g4_samplename[row];
+						
+						text = "<b>Run Name: </b>".fontcolor("#800000") + run[col] 
+								+ "<br/><b>Sample Name (y-value): </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>" 
+								+ "<br><b>Date:</b> ".fontcolor("#800080") + moment(d).format("DD/MM/YYYY") 
+								+ "<br/><b> Mean: </b>".fontcolor("#006400") + data[2]   
+								+ "<br/><b> 2SD: </b>".fontcolor("#ff0000") + data[1] + ' - ' + data[3]  
+								+ "<br/><b> %  of Duplicates: </b>".fontcolor("#000080") + data[4] 
+								+ '</font>'
+						
+						
+						if (run[1].length == 0){return text}
+						else if (run[1].length != 0) {
+							note = "<br/><b>Note: </b>" + run[1] 
+							text = 	text + note.fontcolor("red") 
+							return text
+						}
+						else {console.log("Error in labels")}
+					},
+				},	
+			},
+			series: {
+				"Lower" : {
+					strokePattern: Dygraph.DASHED_LINE ,
+					color: "#ff0000",
+					strokeWidth: 2,
+				},
+				"Mean" : {
+					drawPoints: false,
+					color: "#006400",
+					strokeWidth: 2,
+				},
+				"Upper": {	
+					strokePattern: Dygraph.DASHED_LINE ,
+					color: "#ff0000",
+					strokeWidth: 2, 
+				},
+				"Scatter" : {
+					drawPoints: true,
+					color: "#0080ff",
+					pointSize: 3,
+					strokeWidth: 0,
+				}
+			},
+			underlayCallback: function(canvas, area, g) {		
+				
+				ctx = g.hidden_ctx_;
+				ctx.fillStyle = "#0080ff";
+				ctx.strokeStyle = "#0080ff";
+				
+				for (i = 0; i < g4_dataname.length; i++) { 
+								
+					var point = g4_dataname[i][4],
+					note = g4_runname[i][1],
+					date = g4_dataname[i][0];
+					
+					if (g4_runname[i][0] == null){}
+					else if(note.length != 0){
+					
+						mutated = g.toDomCoords(date, point)
+						ctx.beginPath();
+						ctx.fillText("A",mutated[0]-3,mutated[1]-10);
+						ctx.strokeRect(mutated[0]-5.5,mutated[1]-19, 12,12)
+						ctx.moveTo(mutated[0],mutated[1]);
+						ctx.lineTo(mutated[0],mutated[1]-7);
+						ctx.closePath();
+						ctx.stroke();
+					}
+				}
+				var [bottom,top] = g.yAxisRange();
+				for(i = 0; i < dateobj.length; i++) {
+					date = dateobj[i];
+					position = g.toDomCoords(date.Annotated_date,bottom);
+					dateobj[i].key3 = position;
+					canvas.fillText(dateobj[i].Notes,dateobj[i].key3[0]+2,dateobj[i].key3[1]-15);
+					canvas.strokeRect(dateobj[i].key3[0],dateobj[i].key3[1]-25,dateobj[i].Notes.length*7,15)
+					canvas.beginPath();
+					canvas.moveTo(dateobj[i].key3[0],dateobj[i].key3[1]);
+					canvas.lineTo(dateobj[i].key3[0],dateobj[i].key3[1]-10);
+					canvas.closePath();
+					canvas.stroke();
+				}
+			},
+			pointClickCallback: function(e, point) {			
+				run = g4_runname[point.idx][0]
+				date = g4_dataname[point.idx][0]
+				date =  moment(date).format("DD-MM-YYYY")
+				copyToClipboard(run)
+				makeQuery(run,date)
+			},
+		}
+	);
+
+	document.getElementById("g4_restorebutton").onclick 	= function() { restorePositioning(g4_graphvar); };
+	document.getElementById("g4_yearbutton").onclick 	= 	function() 	{g4_graphvar.updateOptions({dateWindow: [new Date('2016-10-04'),new Date('2017-05-24 00:00:00')]});};
+	gs.push(g4_graphvar);
+	
+	
+	g5_dataname = [[1475280000000,null,null,null,null,null,null],[1477958400000,2112.25,2122.75,2134.0,2110.0,2116.0,null],[1480550400000,2154.0,2218.0,2218.0,2154.0,2186.0,null],[1483228800000,2065.25,2289.25,2440.0,1958.0,2170.0,null],[1485907200000,2170.75,2271.0,2292.0,2128.0,2224.5,null],[1488326400000,2146.0,2182.0,2187.0,2132.0,2156.5,null],[1491004800000,2072.5,2317.5,2468.0,2013.0,2152.0,null],[1493596800000,null,null,null,null,null,null]]
+	g5_runname = [[null,""],[null,""],[null,""],[null,""],[null,""],[null,""],[null,""],[null,""]]
+	g5_samplename = [null,null,null,null,null,null,null,null]
+
+	for (j = 0; j < g5_dataname.length; j++){
+		g5_dataname[j][0] = new Date(g5_dataname[j][0])
+	}
+	for (j = 0; j < g5_runname.length; j++){
+		for (i = 0; i < obj.length; i++){
+			var ann = obj[i]
+			if(ann.Run == g5_runname[j][0]){
+				g5_runname[j][1]=ann.Annotation
+			}else{}
+		}
+	}
+
+	g5_graphvar = new Dygraph(
+    	document.getElementById("g5_divname"),
+		g5_dataname, 
+		{
+            labels: ["Date","1st Quantile","Q3 Quantile","Upper Whiskers", "Lower Whiskers", "Median","Scatter"],
+			labelsDiv: document.getElementById("g5_labeldiv"),
+			labelsSeparateLines: true,
+			showRangeSelector: true,
+			includeZero: true,
+			rangeSelectorHeight: 20,
+			rangeSelectorPlotFillColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotFillGradientColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotStrokeColor: "rgba(0,0,0,0)",
+			interactionModel: Dygraph.defaultInteractionModel,
+			plotter: candlePlotter,
+			highlightSeriesOpts: { highlightCircleSize : 5 },
+			legend: "always",
+			title: 'Historical monthly box-and-whisker plot for Bcftools_Stats_number_of_SNPs',
+			xlabel: 'Date',
+			ylabel: 'Bcftools_Stats_number_of_SNPs per month',
+			legendFormatter: legendFormatter,
+			axisLabelFontSize: 10,
+			titleHeight: 25,
+			xLabelHeight: 15,
+			yLabelWidth: 15,
+			axes: {
+				x: {
+					axisLabelFormatter: function (d, gran) {
+						return moment(d).format("MMM YY");
+					},
+					valueFormatter: function (d,opt,se,dy,row,col) {
+						var text = [], 
+						data = g5_dataname[row],
+						run = g5_runname[row],
+						sample = g5_samplename[row];
+						
+						text = "<b>Run Name: </b>".fontcolor("#800000") + run[0]
+								+ "<br/><b>Sample Name: </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>"
+								+ "<br><b>Month:</b> ".fontcolor("#800080") + moment(d).format("MMMM") 
+								+ "<br><b>1st Quantile:</b> ".fontcolor("#ffcc00") + data[1] 
+								+ "<br><b>3rd Quantile:</b> ".fontcolor("#617a00") + data[2] 
+								+ "<br><b>Upper Whiskers:</b> ".fontcolor("#007a0a") + data[3] 
+								+ "<br><b>Lower Whiskers:</b> ".fontcolor("#f442d1") + data[4] 
+								+ "<br><b>Median:</b> ".fontcolor("#7e04a3") + data[5] 
+								+ "<br><b>Outlier:</b> ".fontcolor("#ff6666") + data[6] 
+						
+					
+						if (run[1].length == 0){return text}
+						else if (run[1].length != 0){
+							note = run[1]
+							text = text + "<br><b>Notes:</b> ".fontcolor("#ff0000") + note.fontcolor("red")
+							return text
+						}
+						else{console.log("Error in labels")}
+							
+					},				
+				},
+			},
+			series: {
+				"1st Quantile" : {
+					color: "#ffcc00"
+				}, 
+				"3rd Quantile" : {
+					color: "#617a00"
+				}, 
+				"Upper Whiskers" : {
+					color: "#007a0a"
+				}, 
+				"Lower Whiskers" : {
+					color: "#f442d1"
+				}, 
+				"Median" : {
+					color: "#7e04a3"
+				}, 
+				"Scatter" : {
+					drawPoints: true,
+					pointSize: 5,
+					color: "#ff6666"
+				}
+				
+			},	
+			underlayCallback: function(canvas, area, g) {		
+				ctx = g.hidden_ctx_;
+				ctx.fillStyle = "#0080ff";
+				ctx.strokeStyle = "#0080ff";
+				
+				for (i = 0; i < g5_dataname.length; i++) { 
+					var point = g5_dataname[i][6],
+					note = g5_runname[i][1],
+					date = g5_dataname[i][0];
+					
+					if (g5_runname[i][1] == null){}
+					else if(note.length != 0){
+						mutated = g.toDomCoords(date, point)
+						ctx.beginPath();
+						ctx.fillText("A",mutated[0]-3,mutated[1]-10);
+						ctx.strokeRect(mutated[0]-5.5,mutated[1]-19, 12,12)
+						ctx.moveTo(mutated[0],mutated[1]);
+						ctx.lineTo(mutated[0],mutated[1]-7);
+						ctx.closePath();
+						ctx.stroke();
+					}
+				}
+				var [bottom,top] = g.yAxisRange();
+				for(i = 0; i < dateobj.length; i++) {
+					date = dateobj[i];
+					position = g.toDomCoords(date.Annotated_date,bottom);
+					dateobj[i].key3 = position;
+					canvas.fillText(dateobj[i].Notes,dateobj[i].key3[0]+2,dateobj[i].key3[1]-15);
+					canvas.strokeRect(dateobj[i].key3[0],dateobj[i].key3[1]-25,dateobj[i].Notes.length*7,15)
+					canvas.beginPath();
+					canvas.moveTo(dateobj[i].key3[0],dateobj[i].key3[1]);
+					canvas.lineTo(dateobj[i].key3[0],dateobj[i].key3[1]-10);
+					canvas.closePath();
+					canvas.stroke();
+				}
+				
+			},
+			pointClickCallback: function(e, point) {
+				run = g5_runname[point.idx][0]
+				date = g5_dataname[point.idx][0]
+				date =  moment(date).format("DD-MM-YYYY")
+				copyToClipboard(run)
+				makeQuery(run,date)
+			},
+		}
+	);		
+	document.getElementById("g5_restorebutton").onclick 	= function() { restorePositioning(g5_graphvar); };
+	document.getElementById("g5_yearbutton").onclick 	= 	function() 	{g5_graphvar.updateOptions({dateWindow: [new Date('2016-10-04'),new Date('2017-05-24 00:00:00')]});};
+	gs.push(g5_graphvar);
+	
+	
+	g6_dataname = [[1475280000000,null,null,null,null,null,null],[1477958400000,149.75,153.25,153.25,149.0,150.5,160.0],[1477958400000,149.75,153.25,153.25,149.0,150.5,160.0],[1477958400000,149.75,153.25,153.25,149.0,150.5,160.0],[1480550400000,121.0,140.0,140.0,121.0,130.5,null],[1483228800000,135.75,150.75,159.0,132.0,142.5,null],[1485907200000,142.25,152.75,161.0,128.0,148.5,null],[1488326400000,142.0,143.0,143.0,142.0,142.5,136.0],[1488326400000,142.0,143.0,143.0,142.0,142.5,136.0],[1488326400000,142.0,143.0,143.0,142.0,142.5,147.0],[1488326400000,142.0,143.0,143.0,142.0,142.5,147.0],[1491004800000,159.0,169.5,177.0,147.0,162.0,136.0],[1493596800000,null,null,null,null,null,null]]
+	g6_runname = [[null,""],["Run-4, Run-4, Run-4",""],["Run-4, Run-4, Run-4",""],["Run-4, Run-4, Run-4",""],[null,""],[null,""],[null,""],["Run-12, Run-13",""],["Run-12, Run-13",""],["Run-12, Run-13",""],["Run-12, Run-13",""],["Run-14",""],[null,""]]
+	g6_samplename = [null,"SampID_11676, SampID_11677, SampID_11678","SampID_11676, SampID_11677, SampID_11678","SampID_11676, SampID_11677, SampID_11678",null,null,null,"SampID_7193, SampID_7198","SampID_7193, SampID_7198","SampID_7196, SampID_7199","SampID_7196, SampID_7199","SampID_7201",null]
+
+	for (j = 0; j < g6_dataname.length; j++){
+		g6_dataname[j][0] = new Date(g6_dataname[j][0])
+	}
+	for (j = 0; j < g6_runname.length; j++){
+		for (i = 0; i < obj.length; i++){
+			var ann = obj[i]
+			if(ann.Run == g6_runname[j][0]){
+				g6_runname[j][1]=ann.Annotation
+			}else{}
+		}
+	}
+
+	g6_graphvar = new Dygraph(
+    	document.getElementById("g6_divname"),
+		g6_dataname, 
+		{
+            labels: ["Date","1st Quantile","Q3 Quantile","Upper Whiskers", "Lower Whiskers", "Median","Scatter"],
+			labelsDiv: document.getElementById("g6_labeldiv"),
+			labelsSeparateLines: true,
+			showRangeSelector: true,
+			includeZero: true,
+			rangeSelectorHeight: 20,
+			rangeSelectorPlotFillColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotFillGradientColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotStrokeColor: "rgba(0,0,0,0)",
+			interactionModel: Dygraph.defaultInteractionModel,
+			plotter: candlePlotter,
+			highlightSeriesOpts: { highlightCircleSize : 5 },
+			legend: "always",
+			title: 'Historical monthly box-and-whisker plot for Bcftools_Stats_number_of_indels',
+			xlabel: 'Date',
+			ylabel: 'Bcftools_Stats_number_of_indels per month',
+			legendFormatter: legendFormatter,
+			axisLabelFontSize: 10,
+			titleHeight: 25,
+			xLabelHeight: 15,
+			yLabelWidth: 15,
+			axes: {
+				x: {
+					axisLabelFormatter: function (d, gran) {
+						return moment(d).format("MMM YY");
+					},
+					valueFormatter: function (d,opt,se,dy,row,col) {
+						var text = [], 
+						data = g6_dataname[row],
+						run = g6_runname[row],
+						sample = g6_samplename[row];
+						
+						text = "<b>Run Name: </b>".fontcolor("#800000") + run[0]
+								+ "<br/><b>Sample Name: </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>"
+								+ "<br><b>Month:</b> ".fontcolor("#800080") + moment(d).format("MMMM") 
+								+ "<br><b>1st Quantile:</b> ".fontcolor("#ffcc00") + data[1] 
+								+ "<br><b>3rd Quantile:</b> ".fontcolor("#617a00") + data[2] 
+								+ "<br><b>Upper Whiskers:</b> ".fontcolor("#007a0a") + data[3] 
+								+ "<br><b>Lower Whiskers:</b> ".fontcolor("#f442d1") + data[4] 
+								+ "<br><b>Median:</b> ".fontcolor("#7e04a3") + data[5] 
+								+ "<br><b>Outlier:</b> ".fontcolor("#ff6666") + data[6] 
+						
+					
+						if (run[1].length == 0){return text}
+						else if (run[1].length != 0){
+							note = run[1]
+							text = text + "<br><b>Notes:</b> ".fontcolor("#ff0000") + note.fontcolor("red")
+							return text
+						}
+						else{console.log("Error in labels")}
+							
+					},				
+				},
+			},
+			series: {
+				"1st Quantile" : {
+					color: "#ffcc00"
+				}, 
+				"3rd Quantile" : {
+					color: "#617a00"
+				}, 
+				"Upper Whiskers" : {
+					color: "#007a0a"
+				}, 
+				"Lower Whiskers" : {
+					color: "#f442d1"
+				}, 
+				"Median" : {
+					color: "#7e04a3"
+				}, 
+				"Scatter" : {
+					drawPoints: true,
+					pointSize: 5,
+					color: "#ff6666"
+				}
+				
+			},	
+			underlayCallback: function(canvas, area, g) {		
+				ctx = g.hidden_ctx_;
+				ctx.fillStyle = "#0080ff";
+				ctx.strokeStyle = "#0080ff";
+				
+				for (i = 0; i < g6_dataname.length; i++) { 
+					var point = g6_dataname[i][6],
+					note = g6_runname[i][1],
+					date = g6_dataname[i][0];
+					
+					if (g6_runname[i][1] == null){}
+					else if(note.length != 0){
+						mutated = g.toDomCoords(date, point)
+						ctx.beginPath();
+						ctx.fillText("A",mutated[0]-3,mutated[1]-10);
+						ctx.strokeRect(mutated[0]-5.5,mutated[1]-19, 12,12)
+						ctx.moveTo(mutated[0],mutated[1]);
+						ctx.lineTo(mutated[0],mutated[1]-7);
+						ctx.closePath();
+						ctx.stroke();
+					}
+				}
+				var [bottom,top] = g.yAxisRange();
+				for(i = 0; i < dateobj.length; i++) {
+					date = dateobj[i];
+					position = g.toDomCoords(date.Annotated_date,bottom);
+					dateobj[i].key3 = position;
+					canvas.fillText(dateobj[i].Notes,dateobj[i].key3[0]+2,dateobj[i].key3[1]-15);
+					canvas.strokeRect(dateobj[i].key3[0],dateobj[i].key3[1]-25,dateobj[i].Notes.length*7,15)
+					canvas.beginPath();
+					canvas.moveTo(dateobj[i].key3[0],dateobj[i].key3[1]);
+					canvas.lineTo(dateobj[i].key3[0],dateobj[i].key3[1]-10);
+					canvas.closePath();
+					canvas.stroke();
+				}
+				
+			},
+			pointClickCallback: function(e, point) {
+				run = g6_runname[point.idx][0]
+				date = g6_dataname[point.idx][0]
+				date =  moment(date).format("DD-MM-YYYY")
+				copyToClipboard(run)
+				makeQuery(run,date)
+			},
+		}
+	);		
+	document.getElementById("g6_restorebutton").onclick 	= function() { restorePositioning(g6_graphvar); };
+	document.getElementById("g6_yearbutton").onclick 	= 	function() 	{g6_graphvar.updateOptions({dateWindow: [new Date('2016-10-04'),new Date('2017-05-24 00:00:00')]});};
+	gs.push(g6_graphvar);
+	
+
+	g7_dataname = [[1475539200000,null,null,null],[1478217600000,2.5,1.4,1.98],[1478822400000,2.5,1.4,2.0],[1479427200000,2.5,1.4,1.98],[1480032000000,2.5,1.4,1.92],[1480550400000,2.5,1.4,1.8],[1481155200000,2.5,1.4,1.81],[1483315200000,2.5,1.4,1.82],[1483920000000,2.5,1.4,1.88],[1484524800000,2.5,1.4,1.85],[1485129600000,2.5,1.4,1.95],[1485734400000,2.5,1.4,1.95],[1486339200000,2.5,1.4,2.15],[1486944000000,2.5,1.4,1.87],[1487548800000,2.5,1.4,2.11],[1488153600000,2.5,1.4,2.12],[1488758400000,2.5,1.4,1.91],[1489363200000,2.5,1.4,1.96],[1489968000000,2.5,1.4,1.98],[1490572800000,2.5,1.4,1.98],[1491177600000,2.5,1.4,1.94],[1491782400000,2.5,1.4,1.94],[1492387200000,2.5,1.4,1.98],[1492992000000,2.5,1.4,1.87],[1495584000000,null,null,null]]
+	g7_runname = [[null,""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-7",""],["Run-8",""],["Run-9",""],["Run-10",""],["Run-11",""],["Run-12",""],["Run-13",""],["Run-14",""],["Run-15",""],["Run-16",""],["Run-17",""],[null,""]]
+	g7_samplename = [null,"SampID_6737 (1.96), SampID_6738 (2.02), SampID_6740 (1.96)","SampID_6741 (2.02), SampID_6743 (1.96), SampID_6744 (2.02)","SampID_6320 (1.98), SampID_6321 (1.98), SampID_6319 (1.98)","SampID_11676 (1.92), SampID_11677 (1.92), SampID_11678 (1.92)","SampID_13726 (1.8), SampID_13727 (1.8), SampID_13728 (1.8)","SampID_10895 (1.81), SampID_10893 (1.81), SampID_10894 (1.81)","SampID_26782 (1.82), SampID_26783 (1.82), SampID_26784 (1.82)","SampID_26776 (1.88), SampID_26777 (1.88), SampID_26778 (1.88)","SampID_10896 (1.85), SampID_10897 (1.85), SampID_10898 (1.85)","SampID_10901 (nan), SampID_10902 (1.95), SampID_10900 (nan)","SampID_10903 (1.95), SampID_10904 (1.95)","SampID_6745 (2.15), SampID_6742 (2.15), SampID_6739 (2.15)","SampID_7170 (1.87), SampID_7173 (1.87), SampID_7176 (1.87)","SampID_7185 (2.11), SampID_7179 (2.11), SampID_7182 (2.11)","SampID_7171 (2.12), SampID_7174 (2.12), SampID_7177 (2.12)","SampID_7180 (nan), SampID_7184 (1.91), SampID_7186 (nan)","SampID_7187 (1.91), SampID_7188 (1.91), SampID_7191 (2.05)","SampID_7196 (1.97), SampID_7193 (1.91), SampID_7194 (2.05)","SampID_7199 (1.97), SampID_7198 (1.91), SampID_7197 (2.05)","SampID_7201 (1.91), SampID_7202 (1.97)","SampID_6312 (1.94), SampID_6316 (1.94), SampID_6317 (1.94)","SampID_6536 (1.98), SampID_6537 (1.98), SampID_6538 (1.98)","SampID_11686 (1.87), SampID_11657 (1.87), SampID_11687 (1.87)",null]
+
+	for (j = 0; j < g7_dataname.length; j++){
+		g7_dataname[j][0] = new Date(g7_dataname[j][0])
+	}
+	for (j = 0; j < g7_runname.length; j++){
+		for (i = 0; i < obj.length; i++){
+			var ann = obj[i]
+			if(ann.Run == g7_runname[j][0]){
+				g7_runname[j][1]=ann.Annotation
+			}else{}
+		}
+	}
+
+	g7_graphvar = new Dygraph(
+    	document.getElementById("g7_divname"),
+		g7_dataname, 
+		{
+			labels: [ "Date","Upper","Lower","Scatter"],
+			labelsDiv: document.getElementById("g7_labeldiv"),
+			labelsSeparateLines: true,
+			showRangeSelector: true,
+			rangeSelectorHeight: 20,
+			includeZero: true,
+			rangeSelectorPlotFillColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotFillGradientColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotStrokeColor: "rgba(0,0,0,0)",
+			interactionModel: Dygraph.defaultInteractionModel,
+			highlightSeriesOpts: { highlightCircleSize : 5 },
+			legend: "always",
+			title: 'Historical runs Bcftools_Stats_tstv',
+			xlabel: 'Date',
+			ylabel: 'Mean Bcftools_Stats_tstv per run',
+			axisLabelFontSize: 10,
+			titleHeight: 25,
+			xLabelHeight: 15,
+			yLabelWidth: 15,
+			legendFormatter: legendFormatter,
+			axes: {
+				x: {
+					axisLabelFormatter: function (d, gran) {
+						return moment(d).format("MMM YY");
+					},
+					valueFormatter: function (d,opt,se,dy,row,col) {
+						var text = [], 
+						data = g7_dataname[row],
+						run = g7_runname[row],
+						sample = g7_samplename[row];
+
+						if (run[1].length == 0){
+							if (data[1]==null){
+								text = "<b>Run Name: </b>".fontcolor("#800000") + run[0] 
+										+ "<br/><b>Sample Name (y-value): </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>" 
+										+ "<br><b>Date:</b> ".fontcolor("#800080") + moment(d).format("DD/MM/YYYY") 
+										+ "<br/><b>Threshold: </b>".fontcolor("#ff0000") + data[2]
+										+ "<br/><b>No. of SNPs: </b>".fontcolor("#000080") + data[3]
+								return text
+
+							}
+							else{
+								text = "<b>Run Name: </b>".fontcolor("#800000") + run[0] 
+										+ "<br/><b>Sample Name (y-value): </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>" 
+										+ "<br><b>Date:</b> ".fontcolor("#800080") + moment(d).format("DD/MM/YYYY") 
+										+ "<br/><b>Upper Threshold: </b>".fontcolor("#ff0000") + data[1]
+										+ "<br/><b>Lower Threshold: </b>".fontcolor("#ff0000") + data[2]
+										+ "<br/><b>No. of SNPs: </b>".fontcolor("#000080") + data[3]
+								return text						
+							}
+						}else if (run[1].length != 0){
+							note = "<br/><b>Note: </b>" + run[1]
+							if (data[1]==null){
+
+								text = "<b>Run Name: </b>".fontcolor("#800000") + run[0] 
+										+ "<br/><b>Sample Name (y-value): </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>" 
+										+ "<br><b>Date:</b> ".fontcolor("#800080") + moment(d).format("DD/MM/YYYY") 
+										+ "<br/><b>Threshold: </b>".fontcolor("#ff0000") + data[2]
+										+ "<br/><b>No. of SNPs: </b>".fontcolor("#000080") + data[3]
+										+ note.fontcolor("red") ;
+								return text								
+							}
+							else{
+								text = "<b>Run Name: </b>".fontcolor("#800000") + run[0] 
+										+ "<br/><b>Sample Name (y-value): </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>" 
+										+ "<br><b>Date:</b> ".fontcolor("#800080") + moment(d).format("DD/MM/YYYY") 
+										+ "<br/><b>Upper Threshold: </b>".fontcolor("#ff0000") + data[1]
+										+ "<br/><b>Lower Threshold: </b>".fontcolor("#ff0000") + data[2]
+										+ "<br/><b>No. of SNPs: </b>".fontcolor("#000080") + data[3]
+										+ note.fontcolor("red") ;
+								return text
+							}
+						}
+						else{console.log("Error in labels")}
+						
+					},					
+				},
+			},
+			series: {
+				"Upper" : {
+					strokePattern: Dygraph.DASHED_LINE ,
+					color: "#ff0000",
+					strokeWidth: 2, 
+				}, 
+				"Lower" : {
+					strokePattern: Dygraph.DASHED_LINE ,
+					color: "#ff0000",
+					strokeWidth: 2, 
+				}, 
+				"Scatter" : {
+					strokeWidth: 0,
+					drawPoints: true,
+					pointSize: 3,
+					color: "#0080ff"
+				}
+			},	
+			underlayCallback: function(canvas, area, g) {		
+				
+				ctx = g.hidden_ctx_;
+				ctx.fillStyle = "#0080ff";
+				ctx.strokeStyle = "#0080ff";
+				
+				for (i = 0; i < g7_dataname.length; i++) { 
+								
+					var point = g7_dataname[i][3],
+						note = g7_runname[i][1],
+						date = g7_dataname[i][0];
+					
+					if (g7_runname[i][0] == null){}
+					else if(note.length != 0){
+						mutated = g.toDomCoords(date, point)
+						ctx.beginPath();
+						ctx.fillText("A",mutated[0]-3,mutated[1]-10);
+						ctx.strokeRect(mutated[0]-5.5,mutated[1]-19, 12,12)
+						ctx.moveTo(mutated[0],mutated[1]);
+						ctx.lineTo(mutated[0],mutated[1]-7);
+						ctx.closePath();
+						ctx.stroke();
+					}
+				}
+				var [bottom,top] = g.yAxisRange();
+					for(i = 0; i < dateobj.length; i++) {
+						date = dateobj[i];
+						position = g.toDomCoords(date.Annotated_date,bottom);
+						dateobj[i].key3 = position;
+						canvas.fillText(dateobj[i].Notes,dateobj[i].key3[0]+2,dateobj[i].key3[1]-15);
+						canvas.strokeRect(dateobj[i].key3[0],dateobj[i].key3[1]-25,dateobj[i].Notes.length*7,15)
+						canvas.beginPath();
+						canvas.moveTo(dateobj[i].key3[0],dateobj[i].key3[1]);
+						canvas.lineTo(dateobj[i].key3[0],dateobj[i].key3[1]-10);
+						canvas.closePath();
+						canvas.stroke();
+						
+					}
+				
+			},
+			pointClickCallback: function(e, point) {
+				run = g7_runname[point.idx][0]
+				date = g7_dataname[point.idx][0]
+				date =  moment(date).format("DD-MM-YYYY")
+				copyToClipboard(run)
+				makeQuery(run,date)
+			},
+		}
+	);
+	document.getElementById("g7_restorebutton").onclick 	= function() { restorePositioning(g7_graphvar); };
+	document.getElementById("g7_yearbutton").onclick 	= 	function() 	{g7_graphvar.updateOptions({dateWindow: [new Date('2016-10-04'),new Date('2017-05-24 00:00:00')]});};
+	gs.push(g7_graphvar);
+	
+
+	g8_dataname = [[1475539200000,null,null,null],[1478217600000,null,100.0,71.67],[1478822400000,null,100.0,69.0],[1479427200000,null,100.0,72.33],[1480032000000,null,100.0,91.33],[1480550400000,null,100.0,95.33],[1481155200000,null,100.0,81.67],[1483315200000,null,100.0,119.0],[1483920000000,null,100.0,90.0],[1484524800000,null,100.0,79.67],[1485129600000,null,100.0,78.67],[1485734400000,null,100.0,81.0],[1486339200000,null,100.0,81.67],[1486944000000,null,100.0,83.33],[1487548800000,null,100.0,81.0],[1488153600000,null,100.0,83.0],[1488758400000,null,100.0,104.0],[1489363200000,null,100.0,98.67],[1489968000000,null,100.0,88.33],[1490572800000,null,100.0,89.67],[1491177600000,null,100.0,83.5],[1491782400000,null,100.0,53.67],[1492387200000,null,100.0,83.67],[1492992000000,null,100.0,96.0],[1495584000000,null,null,null]]
+	g8_runname = [[null,""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-7",""],["Run-8",""],["Run-9",""],["Run-10",""],["Run-11",""],["Run-12",""],["Run-13",""],["Run-14",""],["Run-15",""],["Run-16",""],["Run-17",""],[null,""]]
+	g8_samplename = [null,"SampID_6737 (66), SampID_6738 (50), SampID_6740 (99)","SampID_6741 (77), SampID_6743 (65), SampID_6744 (65)","SampID_6320 (62), SampID_6321 (76), SampID_6319 (79)","SampID_11676 (89), SampID_11677 (90), SampID_11678 (95)","SampID_13726 (106), SampID_13727 (94), SampID_13728 (86)","SampID_10895 (80), SampID_10893 (82), SampID_10894 (83)","SampID_26782 (120), SampID_26783 (95), SampID_26784 (142)","SampID_26776 (101), SampID_26777 (83), SampID_26778 (86)","SampID_10896 (92), SampID_10897 (78), SampID_10898 (69)","SampID_10901 (79), SampID_10902 (74), SampID_10900 (83)","SampID_10903 (88), SampID_10904 (74)","SampID_6745 (113), SampID_6742 (76), SampID_6739 (56)","SampID_7170 (91), SampID_7173 (67), SampID_7176 (92)","SampID_7185 (105), SampID_7179 (104), SampID_7182 (34)","SampID_7171 (92), SampID_7174 (63), SampID_7177 (94)","SampID_7180 (92), SampID_7184 (132), SampID_7186 (88)","SampID_7187 (90), SampID_7188 (99), SampID_7191 (107)","SampID_7196 (92), SampID_7193 (84), SampID_7194 (89)","SampID_7199 (79), SampID_7198 (88), SampID_7197 (102)","SampID_7201 (79), SampID_7202 (88)","SampID_6312 (49), SampID_6316 (50), SampID_6317 (62)","SampID_6536 (81), SampID_6537 (81), SampID_6538 (89)","SampID_11686 (109), SampID_11657 (81), SampID_11687 (98)",null]
+
+	for (j = 0; j < g8_dataname.length; j++){
+		g8_dataname[j][0] = new Date(g8_dataname[j][0])
+	}
+	for (j = 0; j < g8_runname.length; j++){
+		for (i = 0; i < obj.length; i++){
+			var ann = obj[i]
+			if(ann.Run == g8_runname[j][0]){
+				g8_runname[j][1]=ann.Annotation
+			}else{}
+		}
+	}
+
+	g8_graphvar = new Dygraph(
+    	document.getElementById("g8_divname"),
+		g8_dataname, 
+		{
+			labels: [ "Date","Upper","Lower","Scatter"],
+			labelsDiv: document.getElementById("g8_labeldiv"),
+			labelsSeparateLines: true,
+			showRangeSelector: true,
+			rangeSelectorHeight: 20,
+			includeZero: true,
+			rangeSelectorPlotFillColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotFillGradientColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotStrokeColor: "rgba(0,0,0,0)",
+			interactionModel: Dygraph.defaultInteractionModel,
+			highlightSeriesOpts: { highlightCircleSize : 5 },
+			legend: "always",
+			title: 'Historical runs QualiMap_median_coverage',
+			xlabel: 'Date',
+			ylabel: 'Mean QualiMap_median_coverage per run',
+			axisLabelFontSize: 10,
+			titleHeight: 25,
+			xLabelHeight: 15,
+			yLabelWidth: 15,
+			legendFormatter: legendFormatter,
+			axes: {
+				x: {
+					axisLabelFormatter: function (d, gran) {
+						return moment(d).format("MMM YY");
+					},
+					valueFormatter: function (d,opt,se,dy,row,col) {
+						var text = [], 
+						data = g8_dataname[row],
+						run = g8_runname[row],
+						sample = g8_samplename[row];
+
+						if (run[1].length == 0){
+							if (data[1]==null){
+								text = "<b>Run Name: </b>".fontcolor("#800000") + run[0] 
+										+ "<br/><b>Sample Name (y-value): </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>" 
+										+ "<br><b>Date:</b> ".fontcolor("#800080") + moment(d).format("DD/MM/YYYY") 
+										+ "<br/><b>Threshold: </b>".fontcolor("#ff0000") + data[2]
+										+ "<br/><b>No. of SNPs: </b>".fontcolor("#000080") + data[3]
+								return text
+
+							}
+							else{
+								text = "<b>Run Name: </b>".fontcolor("#800000") + run[0] 
+										+ "<br/><b>Sample Name (y-value): </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>" 
+										+ "<br><b>Date:</b> ".fontcolor("#800080") + moment(d).format("DD/MM/YYYY") 
+										+ "<br/><b>Upper Threshold: </b>".fontcolor("#ff0000") + data[1]
+										+ "<br/><b>Lower Threshold: </b>".fontcolor("#ff0000") + data[2]
+										+ "<br/><b>No. of SNPs: </b>".fontcolor("#000080") + data[3]
+								return text						
+							}
+						}else if (run[1].length != 0){
+							note = "<br/><b>Note: </b>" + run[1]
+							if (data[1]==null){
+
+								text = "<b>Run Name: </b>".fontcolor("#800000") + run[0] 
+										+ "<br/><b>Sample Name (y-value): </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>" 
+										+ "<br><b>Date:</b> ".fontcolor("#800080") + moment(d).format("DD/MM/YYYY") 
+										+ "<br/><b>Threshold: </b>".fontcolor("#ff0000") + data[2]
+										+ "<br/><b>No. of SNPs: </b>".fontcolor("#000080") + data[3]
+										+ note.fontcolor("red") ;
+								return text								
+							}
+							else{
+								text = "<b>Run Name: </b>".fontcolor("#800000") + run[0] 
+										+ "<br/><b>Sample Name (y-value): </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>" 
+										+ "<br><b>Date:</b> ".fontcolor("#800080") + moment(d).format("DD/MM/YYYY") 
+										+ "<br/><b>Upper Threshold: </b>".fontcolor("#ff0000") + data[1]
+										+ "<br/><b>Lower Threshold: </b>".fontcolor("#ff0000") + data[2]
+										+ "<br/><b>No. of SNPs: </b>".fontcolor("#000080") + data[3]
+										+ note.fontcolor("red") ;
+								return text
+							}
+						}
+						else{console.log("Error in labels")}
+						
+					},					
+				},
+			},
+			series: {
+				"Upper" : {
+					strokePattern: Dygraph.DASHED_LINE ,
+					color: "#ff0000",
+					strokeWidth: 2, 
+				}, 
+				"Lower" : {
+					strokePattern: Dygraph.DASHED_LINE ,
+					color: "#ff0000",
+					strokeWidth: 2, 
+				}, 
+				"Scatter" : {
+					strokeWidth: 0,
+					drawPoints: true,
+					pointSize: 3,
+					color: "#0080ff"
+				}
+			},	
+			underlayCallback: function(canvas, area, g) {		
+				
+				ctx = g.hidden_ctx_;
+				ctx.fillStyle = "#0080ff";
+				ctx.strokeStyle = "#0080ff";
+				
+				for (i = 0; i < g8_dataname.length; i++) { 
+								
+					var point = g8_dataname[i][3],
+						note = g8_runname[i][1],
+						date = g8_dataname[i][0];
+					
+					if (g8_runname[i][0] == null){}
+					else if(note.length != 0){
+						mutated = g.toDomCoords(date, point)
+						ctx.beginPath();
+						ctx.fillText("A",mutated[0]-3,mutated[1]-10);
+						ctx.strokeRect(mutated[0]-5.5,mutated[1]-19, 12,12)
+						ctx.moveTo(mutated[0],mutated[1]);
+						ctx.lineTo(mutated[0],mutated[1]-7);
+						ctx.closePath();
+						ctx.stroke();
+					}
+				}
+				var [bottom,top] = g.yAxisRange();
+					for(i = 0; i < dateobj.length; i++) {
+						date = dateobj[i];
+						position = g.toDomCoords(date.Annotated_date,bottom);
+						dateobj[i].key3 = position;
+						canvas.fillText(dateobj[i].Notes,dateobj[i].key3[0]+2,dateobj[i].key3[1]-15);
+						canvas.strokeRect(dateobj[i].key3[0],dateobj[i].key3[1]-25,dateobj[i].Notes.length*7,15)
+						canvas.beginPath();
+						canvas.moveTo(dateobj[i].key3[0],dateobj[i].key3[1]);
+						canvas.lineTo(dateobj[i].key3[0],dateobj[i].key3[1]-10);
+						canvas.closePath();
+						canvas.stroke();
+						
+					}
+				
+			},
+			pointClickCallback: function(e, point) {
+				run = g8_runname[point.idx][0]
+				date = g8_dataname[point.idx][0]
+				date =  moment(date).format("DD-MM-YYYY")
+				copyToClipboard(run)
+				makeQuery(run,date)
+			},
+		}
+	);
+	document.getElementById("g8_restorebutton").onclick 	= function() { restorePositioning(g8_graphvar); };
+	document.getElementById("g8_yearbutton").onclick 	= 	function() 	{g8_graphvar.updateOptions({dateWindow: [new Date('2016-10-04'),new Date('2017-05-24 00:00:00')]});};
+	gs.push(g8_graphvar);
+	
+
+	g9_dataname = [[1475539200000,null],[1478217600000,0.0],[1478822400000,0.0],[1479427200000,0.0],[1480032000000,0.0],[1480550400000,33.3333333333],[1481155200000,0.0],[1483315200000,66.6666666667],[1483920000000,33.3333333333],[1484524800000,0.0],[1485129600000,0.0],[1485734400000,0.0],[1486339200000,33.3333333333],[1486944000000,0.0],[1487548800000,66.6666666667],[1488153600000,0.0],[1488758400000,33.3333333333],[1489363200000,33.3333333333],[1489968000000,0.0],[1490572800000,33.3333333333],[1491177600000,0.0],[1491782400000,0.0],[1492387200000,0.0],[1492992000000,33.3333333333],[1495584000000,null]]
+	g9_runname = [[null,""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-1",""],["Run-2",""],["Run-3",""],["Run-4",""],["Run-5",""],["Run-6",""],["Run-7",""],["Run-8",""],["Run-9",""],["Run-10",""],["Run-11",""],["Run-12",""],["Run-13",""],["Run-14",""],["Run-15",""],["Run-16",""],["Run-17",""],[null,""]]
+	g9_samplename = [null,"SampID_6737 (66), SampID_6738 (50), SampID_6740 (99)","SampID_6741 (77), SampID_6743 (65), SampID_6744 (65)","SampID_6320 (62), SampID_6321 (76), SampID_6319 (79)","SampID_11676 (89), SampID_11677 (90), SampID_11678 (95)","SampID_13726 (106), SampID_13727 (94), SampID_13728 (86)","SampID_10895 (80), SampID_10893 (82), SampID_10894 (83)","SampID_26782 (120), SampID_26783 (95), SampID_26784 (142)","SampID_26776 (101), SampID_26777 (83), SampID_26778 (86)","SampID_10896 (92), SampID_10897 (78), SampID_10898 (69)","SampID_10901 (79), SampID_10902 (74), SampID_10900 (83)","SampID_10903 (88), SampID_10904 (74)","SampID_6745 (113), SampID_6742 (76), SampID_6739 (56)","SampID_7170 (91), SampID_7173 (67), SampID_7176 (92)","SampID_7185 (105), SampID_7179 (104), SampID_7182 (34)","SampID_7171 (92), SampID_7174 (63), SampID_7177 (94)","SampID_7180 (92), SampID_7184 (132), SampID_7186 (88)","SampID_7187 (90), SampID_7188 (99), SampID_7191 (107)","SampID_7196 (92), SampID_7193 (84), SampID_7194 (89)","SampID_7199 (79), SampID_7198 (88), SampID_7197 (102)","SampID_7201 (79), SampID_7202 (88)","SampID_6312 (49), SampID_6316 (50), SampID_6317 (62)","SampID_6536 (81), SampID_6537 (81), SampID_6538 (89)","SampID_11686 (109), SampID_11657 (81), SampID_11687 (98)",null]
+
+
+	for (j = 0; j < g9_dataname.length; j++){
+		g9_dataname[j][0] = new Date(g9_dataname[j][0])
+	}
+
+	for (j = 0; j < g9_runname.length; j++){
+		for (i = 0; i < obj.length; i++){
+			var ann = obj[i]
+			if(ann.Run == g9_runname[j][0]){
+				g9_runname[j][1]=ann.Annotation
+			}else{}
+		}
+	}
+
+	g9_graphvar = new Dygraph(
+    	document.getElementById("g9_divname"),
+		g9_dataname,
+		{
+			labels: [ "Date", "Scatter"],
+			drawPoints: true,
+			strokeWidth: 0.0,
+			labelsDiv: document.getElementById("g9_labeldiv"),
+			labelsSeparateLines: true,
+			showRangeSelector: true,
+			rangeSelectorHeight: 20,
+			includeZero: true,	
+			rangeSelectorPlotFillColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotFillGradientColor: "rgba(0,0,0,0)",
+			rangeSelectorPlotStrokeColor: "rgba(0,0,0,0)", 
+			interactionModel: Dygraph.defaultInteractionModel,
+			highlightSeriesOpts: { highlightCircleSize : 5 },
+			legend: "always",
+			title: '% of samples in each run with QualiMap_median_coverage ≥ 100',
+			xlabel: 'Date',
+			ylabel: '% of samples QualiMap_median_coverage ≥ 100',
+			axisLabelFontSize: 10,
+			titleHeight: 25,
+			xLabelHeight: 15,
+			yLabelWidth: 15,
+			legendFormatter: legendFormatter,
+			axes: {
+				x: {
+					valueFormatter: function (d,opt,se,dy,row,col) {
+						var text = [], 
+						data = g9_dataname[row][1],
+						run = g9_runname[row],
+						sample = g9_samplename[row];
+						
+						text = "<b>Run Name: </b>".fontcolor("#800000") + run[0] 
+								+ "<br/><b>Sample Name (y-value): </b>".fontcolor("#008080") + "<font size='-1.5'>" + sample + "</font>" 
+								+ "<br><b>Date:</b> ".fontcolor("#800080") + moment(d).format("DD/MM/YYYY") 
+								+ "<br/><b>% of samples QualiMap_median_coverage ≥ 100: </b>".fontcolor("#000080") + data
+						
+						
+						if (run[1].length == 0){return text}
+						else if (run[1].length != 0){
+							note = "<br/><b>Note: </b>" + run[1]
+							text = text + note.fontcolor("red");
+							return text
+						}else{console.log("Error in labels")}
+					},					
+				},
+			},
+			series: {
+				"Scatter" : {
+					strokeWidth: 0,
+					pointSize: 3,
+					color: "#0080ff"
+				}
+			},
+			underlayCallback: function(canvas, area, g) {		
+				
+					ctx = g.hidden_ctx_;
+					ctx.fillStyle = "#0080ff";
+					ctx.strokeStyle = "#0080ff";
+					
+					for (i = 0; i < g9_dataname.length; i++) { 
+						point = g9_dataname[i][1],
+						note = g9_runname[i][1],
+						date = g9_dataname[i][0];
+						
+						if (g9_dataname[i][0] == null){}
+						else if(note.length != 0){
+						
+							mutated = g.toDomCoords(date, point)
+							ctx.beginPath();
+							ctx.fillText("A",mutated[0]-3,mutated[1]-10);
+							ctx.strokeRect(mutated[0]-5.5,mutated[1]-19, 12,12)
+							ctx.moveTo(mutated[0],mutated[1]);
+							ctx.lineTo(mutated[0],mutated[1]-7);
+							ctx.closePath();
+							ctx.stroke();
+						}
+					}
+					var [bottom,top] = g.yAxisRange();
+					for(i = 0; i < dateobj.length; i++) {
+						date = dateobj[i];
+						position = g.toDomCoords(date.Annotated_date,bottom);
+						dateobj[i].key3 = position;
+						canvas.fillText(dateobj[i].Notes,dateobj[i].key3[0]+2,dateobj[i].key3[1]-15);
+						canvas.strokeRect(dateobj[i].key3[0],dateobj[i].key3[1]-25,dateobj[i].Notes.length*7,15);
+						canvas.beginPath();
+						canvas.moveTo(dateobj[i].key3[0],dateobj[i].key3[1]);
+						canvas.lineTo(dateobj[i].key3[0],dateobj[i].key3[1]-10);
+						canvas.closePath();
+						canvas.stroke();
+					}
+			},
+			pointClickCallback: function(e, point) {
+				run = g9_runname[point.idx][0];
+				date = g9_dataname[point.idx][0];
+				date =  moment(date).format("DD-MM-YYYY");
+				copyToClipboard(run);
+				makeQuery(run,date);
+			},
+		}
+	);
+
+	document.getElementById("g9_restorebutton").onclick 	= function() { restorePositioning(g9_graphvar); };
+	document.getElementById("g9_yearbutton").onclick 	= 	function() 	{g9_graphvar.updateOptions({dateWindow: [new Date('2016-10-04'),new Date('2017-05-24 00:00:00')]});};
+	gs.push(g9_graphvar);
+	
+	
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+	if (gs.length>1){
+	var sync = Dygraph.synchronize(gs, {
+          range: false
+    });}
+	else{}
+
+////////////////////////////////////////////////////////////////////////
+
+	gs[0].updateOptions({
+		dateWindow: [ new Date('2016-10-04'),
+					  new Date('2017-05-24 00:00:00') ],
+	});
+
+
+	</script>
+</body>
+</html>
+
+
